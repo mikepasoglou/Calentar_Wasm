@@ -1,0 +1,96 @@
+﻿
+@page "/AddIcCategory"
+@inject NavigationManager NavigationManager
+@using Calentar.DataTables
+@inject HttpClient httpClient
+
+
+<p> AddIncomeCategory </p>
+
+
+
+<form>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="Descript" class="control-label">Descript</label>
+                <input for="Descript" class="form-control" @bind="@incomecat.Descript" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <input type="button" class="btn btn-primary" @onclick="@Save" value="Save" />
+                <input type="button" class="btn" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+@code {
+
+
+    string myer = string.Empty;
+
+    //private IIncomeRep _incomeRep { get; set; }
+    private Incategory incomecat = new Incategory();
+
+
+
+    protected async Task Save()
+    {
+            //await _incomeRep.AddIncomeCategory(incomecat);
+        await AddInCategory(incomecat, ClassTEST.USERID);
+            NavigationManager.NavigateTo("/Configuration");
+        
+
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("/Configuration");
+    }
+
+
+
+    private async Task AddInCategory(Incategory model, string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            model.Userid = UserId; // ??????????????????????????????????????
+
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Income/AddIncomeCategory";
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync<Incategory>(baseUri, model);
+            if (response.IsSuccessStatusCode)
+            {
+                // ......
+            }
+            else
+                myer = response.StatusCode.ToString();
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+
+
+}
+
+
+
+

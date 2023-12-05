@@ -1,0 +1,427 @@
+﻿@page "/ExTransactions"
+@inject NavigationManager NavigationManager
+@inject HttpClient httpClient
+@using Calentar.DataTables
+@using Calentar.Client.DataModels;
+@using Newtonsoft.Json;
+@inject ICacheInMemService mycache
+@inject IJSRuntime Js;
+   
+
+<head>
+    <link rel="stylesheet" href="/css/ExTransactions.css" />
+</head>
+
+<body>
+
+
+    @if ((ClassTEST.USERID == string.Empty) || (ClassTEST.responseToken == string.Empty))
+    {
+        ShowAlert("Please Login First");
+    }
+    
+    @if (myer != string.Empty)
+    {
+        ShowAlert(myer);
+    }
+    
+
+    <!-- The Modal -->
+    <div class="modal" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Modal Heading</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    Modal body..
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="col-md-12 mb-3">
+        <InputSelect @bind-Value="selectedExpenseId" @onclick="@Refreshlist">
+            select expense
+            @foreach (var category in expenseslist)
+            {
+                <option value="@category.Id">@category.Descript </option>
+            }
+        </InputSelect>
+    </div>
+
+
+
+
+
+    <Div Class="Expensetranlist" >
+        <Alert Color="Color.Info" Visible>
+            <Paragraph>
+                Εxpenses Transactions
+            </Paragraph>
+        </Alert>
+        <div class="row">
+            <div class="col-md-6">
+                <Button style="color:forestgreen; border-radius: 4px; border :double;" role="button" @onclick="@AddExtranExpense"> Add Transaction ex </Button>
+            </div>
+        </div>
+        <table class="table table-striped align-middle table-bordered">
+            
+            <thead class="table-header">
+        <tr>
+            <th>ID</th>
+            <th>POSTDATE</th>
+            <th>ExpenseName</th>
+            <th>AMOUNT</th>
+            <th>DUEDATE</th>
+            <th>REMINDER</th>
+            <th>REMINDERDATE</th>
+            <th>MEMO</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var exptran in ExpensesVMtranlist)
+        {
+            <tr>
+                        <td data-label="1">@exptran.ID</td>
+                        <td data-label="2">@exptran.POSTDATE</td>
+                        <td data-label="3">@exptran.ExpenseName</td>
+                        <td data-label="4">@exptran.AMOUNT</td>
+                        <td data-label ="5">@exptran.DUEDATE</td>
+                        <td data-label="6">@exptran.REMINDER</td>
+                        <td data-label="7">@exptran.REMINDERDATE</td>
+                        <td data-label="8">@exptran.MEMO</td>
+
+                <td>
+                    <!-- 
+                    <Button Color="Color.Success" Clicked="@(() => DoEditextran(exptran.ID))">Edit</Button>
+                    <Button Color="Color.Danger" Clicked="@(() => ConfrimDeleteExtran(exptran.ID))">Delete</Button>
+                            -->
+                            <button style="color:forestgreen; border-radius: 4px; border :double;" role="button" @onclick="@(() =>DoEditextran(exptran.ID))"> Edit </button>
+                            <button style="color:red;  border-radius: 4px; border :double;" role="button" @onclick="@(() => ConfrimDeleteExtran(exptran.ID))"> Delete </button>
+                </td>
+
+                <!-- 
+                <td>
+                    <a class="nav-link" href="/Addtransactions/exptran.ID">
+                        <span class="oi oi-pencil" aria-hidden="true">Edit</span>
+                    </a>
+                    <a class="nav-link" href="Delete/exptran.ID">
+                        <span class="oi oi-trash" aria-hidden="true">Delete</span>
+                    </a>
+                </td>
+                -->
+               
+            </tr>
+        }
+    </tbody>
+</table>
+
+</Div>
+
+
+
+</body>
+
+
+
+@code {
+
+    //private string ExTransactionscachedData;
+
+
+    private void CloseModal()
+    {
+        showmodal = false;
+    }
+
+    private int selectedExpenseId = 0;
+    private string stateuser;
+    private string stateidstr;
+    bool showmodal = false;
+
+
+
+
+    string myer = string.Empty;
+
+    private int idfordel = 0;
+
+    /*/
+    [Inject]
+    private IExpensesRep _expensesRep { get; set; }
+    [Inject]
+    private IIncomeRep _incomeRep { get; set; }
+    */
+    private IEnumerable<ExpensetranViewModel> ExpensesVMtranlist { get; set; } = new List<ExpensetranViewModel>();
+    private Expensetran expensetran = new Expensetran();
+
+    private List<Expenses> expenseslist = new List<Expenses>();  // from dropdopwn list
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+
+        {
+            /*
+            stateuser = (await ProtectedSessionStore.GetAsync<string>("UserName")).Value ?? string.Empty;
+            stateidstr = (await ProtectedSessionStore.GetAsync<string>("UserID")).Value ?? string.Empty;
+            try { UserID = Convert.ToInt32(stateidstr); } catch { UserID = 0; }
+
+            if ((stateuser != string.Empty) && (UserID > 0))
+            {
+
+            }
+            */
+
+            await Refreshlist();
+            await FillDropdownListExpenses(ClassTEST.USERID);
+
+        }
+        catch (Exception ee) { myer = ee.Message; }
+    }
+
+
+    protected async Task Refreshlist()
+    {
+        try
+        {
+            int curexid = selectedExpenseId;
+            await FillExTranList(ClassTEST.USERID,curexid);
+        }
+        catch (Exception ee) { myer = ee.Message; }
+    }
+
+    private async Task FillExTranList(string UserId, int expenseid)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT is IsNullOrEmpty.";
+                return;
+            }
+
+            string cacheKey = $"CashedData{UserId}_{expenseid}";
+            ClassTEST.FillExTranList_cachedData = mycache.GetCachedData(cacheKey);
+
+            if (!string.IsNullOrEmpty(ClassTEST.FillExTranList_cachedData))
+            {
+                ExpensesVMtranlist = JsonConvert.DeserializeObject<List<ExpensetranViewModel>>(ClassTEST.FillExTranList_cachedData);
+            }
+            else
+            {
+                httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+                string baseUri = "https://mikepas-001-site2.htempurl.com/api/Expense/GetVmExpensesTran";
+                string uriWithParameters = string.Empty;
+                string queryString = string.Empty;
+
+                if (expenseid > 0)
+                {
+                    Dictionary<string, string> queryParameters = new Dictionary<string, string>
+                                        { { "curUserid", UserId}, {"exid" ,expenseid.ToString() }  };
+                    queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+                    uriWithParameters = $"{baseUri}?{queryString}";
+                }
+                else
+                {
+                    Dictionary<string, string> queryParameters = new Dictionary<string, string>
+                                        { { "curUserid", UserId}};
+                    queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+                    uriWithParameters = $"{baseUri}?{queryString}";
+                }
+
+                var response = await httpClient.GetAsync(uriWithParameters);
+                if (response.IsSuccessStatusCode)
+                {
+                    ExpensesVMtranlist = await httpClient.GetFromJsonAsync<IEnumerable<ExpensetranViewModel>>(uriWithParameters);
+                    if (ExpensesVMtranlist.Count() > 0)
+                        mycache.SetCacheData(cacheKey, JsonConvert.SerializeObject(ExpensesVMtranlist), TimeSpan.FromMinutes(20));
+
+                }
+                else
+                {
+                    ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                    myer = resultclass.GetErrorString();
+                }
+            }
+        }
+
+        catch (Exception ex) { myer = ex.Message; }
+    }
+
+
+    private async Task FillDropdownListExpenses(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT  is IsNullOrEmpty.";
+                return;
+            }
+
+            string cacheKey = $"CashedData{UserId}";
+            ClassTEST.FillDropdownListExpenses_cachedData = mycache.GetCachedData(cacheKey);
+
+            if (!string.IsNullOrEmpty(ClassTEST.FillDropdownListExpenses_cachedData))
+            {
+                expenseslist = JsonConvert.DeserializeObject<List<Expenses>>(ClassTEST.FillDropdownListExpenses_cachedData);
+            }
+            else
+            {
+                httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+                string baseUri = "https://mikepas-001-site2.htempurl.com/api/Expense/FillExpenseslist";
+                Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+                string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+                string uriWithParameters = $"{baseUri}?{queryString}";
+
+                var response = await httpClient.GetAsync(uriWithParameters);
+                if (response.IsSuccessStatusCode)
+                {
+                    expenseslist = await httpClient.GetFromJsonAsync<List<Expenses>>(uriWithParameters);
+                       
+                }
+                else
+                {
+                    ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                    myer = resultclass.GetErrorString();
+                }
+
+                Expenses fakeobj = new Expenses { Id = 0, Descript = "All Expenses" };
+                expenseslist.Add(fakeobj);
+                expenseslist = expenseslist.OrderBy(expense => expense.Id).ToList();
+                mycache.SetCacheData(cacheKey, JsonConvert.SerializeObject(expenseslist), TimeSpan.FromMinutes(20));
+            }
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+
+
+    private async Task<bool> DelExTranList(int curid)  
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return false;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            //httpClient.DefaultRequestHeaders.Add(curid, 1);
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Expense/DelExpensTran";
+            
+            Dictionary<string, int> queryParameters = new Dictionary<string, int>{ // pass interger parameter to webapi
+                                { "curid", curid }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value.ToString())}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+            
+
+            HttpResponseMessage response = await httpClient.DeleteAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+
+                return true;
+            }
+            else
+            {
+                myer = response.StatusCode.ToString();
+                return false;
+            }
+
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); return false; }
+    }
+
+
+
+
+
+
+    async Task AddExtranExpense()
+    {
+
+
+        string param = "0"; // newmode
+        NavigationManager.NavigateTo("/Addtransactions/" + param);
+
+    }
+
+
+
+
+
+    async Task DoEditextran(int curid)
+    {
+
+        string param = curid.ToString();
+
+        NavigationManager.NavigateTo("/Addtransactions/"+param);
+
+
+    }
+
+
+    async Task ConfrimDeleteExtran(int curid)
+    {
+
+        try
+        {
+            string param = curid.ToString();
+            idfordel = Convert.ToInt32(param);
+            var res = await DelExTranList(idfordel);
+            if (res)
+              await Refreshlist();  // curent user
+        }
+        catch (Exception ee) { myer = ee.Message; }
+
+
+    }
+
+
+    private void ShowAlert(string mes)
+    {
+        Js.InvokeVoidAsync("alert", mes);
+    }
+
+
+
+
+
+
+
+
+    
+
+}
+

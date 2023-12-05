@@ -1,0 +1,55 @@
+﻿@inherits LayoutComponentBase
+
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu/>
+    </div>
+
+    <main>
+        <div class="top-row px-3">
+            <a href="About" target="_blank">About</a>
+        </div>
+
+        <article class="content px-3">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+    private bool _iconMenuActive { get; set; }
+    private string? IconMenuCssClass => _iconMenuActive ? "width: 80px;" : null;
+
+    protected void ToggleIconMenu(bool iconMenuActive)
+    {
+        _iconMenuActive = iconMenuActive;
+    }
+}
+
+
+<!-- 
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="About" target="_blank">About</a>
+        </div>
+        
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+-->
+
+<!-- 
+<RadzenDialog />
+<RadzenNotification />
+<RadzenContextMenu />
+<RadzenTooltip />
+
+-->

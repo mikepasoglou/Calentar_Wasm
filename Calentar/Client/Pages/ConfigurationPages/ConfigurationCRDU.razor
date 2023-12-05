@@ -1,0 +1,222 @@
+﻿@page "/ConfigurationCRDU"
+@inject NavigationManager NavigationManager
+@using Calentar.DataTables
+@inject HttpClient httpClient
+@inject IJSRuntime Js;
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            background-color: antiquewhite;
+            /*background: linear-gradient(#80FFDB, #3190D9);*/
+           /* background-image: url("/images/bg.jpg"); */
+        }
+
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            width: 50%;
+            float: left;
+            margin-left: 10px;
+            display: flex;
+            justify-content: center;
+            align-content:center;
+            background-color: antiquewhite;
+        }
+
+            .card:hover {
+                box-shadow: 0 8px 36px 0 rgba(0, 0, 0, 0.5);
+            }
+
+       
+
+        .flex-container {
+            display: flex;
+            justify-content: space-around;
+            background: #fff;
+            background-color: antiquewhite;
+        }
+      
+
+    </style>
+</head>
+
+<body>
+
+@if (myer != string.Empty)
+{
+    
+    ShowAlert(myer);
+}
+
+<div class="flex-container">
+    <div class="card" style="">
+        <h4 class="card-header">Add Expense</h4>
+        <div class="card-body">
+
+<form>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="Descript" class="control-label">Descript</label>
+                <input for="Descript" class="form-control" @bind="@expense.Descript" />
+            </div>
+
+
+            <div class="form-group">
+                <InputSelect class="form-select" @bind-Value="expense.Category">
+                    <option value="">Select Expense Category </option>
+                    @foreach (var exp in excatlist)
+                    {
+                        <option value="@exp.Id">@exp.Descript </option>
+                    }
+                </InputSelect>
+            </div>
+            <br />
+            <br />
+            <div class="form-group">
+                <label for="Category" class="control-label">Category</label>
+                <InputNumber readonly @bind-Value="expense.Category" />
+            </div>
+
+            <div class="form-group">
+                <label for="Userid" class="control-label">Userid</label>
+                <input for="Userid" class="form-control" @bind="@expense.Userid" />
+            </div>
+            <div class="form-group">
+                <label for="Memo" class="control-label">Memo</label>
+                <input for="Memo" class="form-control" @bind="@expense.Memo" />
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <input type="button" class="btn btn-primary" @onclick="@Save" value="Save" />
+                <input type="button" class="btn" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</form>
+
+</div>
+</div>
+</div>
+
+
+</body></html>
+
+
+
+@code {
+
+    string myer = string.Empty;
+
+    private Expenses expense = new Expenses();
+
+    private IEnumerable<Excategory> excatlist = new List<Excategory>();  // for dropdopwn list
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await FillExCatList(ClassTEST.USERID);
+        }
+        catch (Exception ee) { myer = ee.Message; }
+    }
+
+
+    private void ShowAlert(string mes)
+    {
+        Js.InvokeVoidAsync("alert", mes);
+    }
+
+
+    protected async Task Save()
+    {
+        await Addexpense(expense, ClassTEST.USERID);
+        NavigationManager.NavigateTo("/Configuration");
+    }
+
+
+
+    private async Task FillExCatList(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Expense/GetAllExpCategories";
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            var response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                excatlist = await httpClient.GetFromJsonAsync<IEnumerable<Excategory>>(uriWithParameters);
+            }
+            else
+                myer = response.StatusCode.ToString();
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+
+    private async Task Addexpense(Expenses model, string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            model.Userid = UserId; // ??????????????????????????????????????
+
+            if (model.Memo == null) // temporary . Fix it Db script
+                model.Memo = " ";
+
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Expense/AddExpense";
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync<Expenses>(baseUri, model);
+            if (response.IsSuccessStatusCode)
+            {
+                // ......
+            }
+            else
+                myer = response.StatusCode.ToString();
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("/Configuration");
+    }
+
+
+}

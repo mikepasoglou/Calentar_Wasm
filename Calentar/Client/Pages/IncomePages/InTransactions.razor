@@ -1,0 +1,396 @@
+﻿@page "/InTransactions"
+@using Calentar.Client.DataModels;
+@inject NavigationManager NavigationManager
+@inject HttpClient httpClient
+@using Calentar.DataTables
+@inject IJSRuntime Js;
+
+
+@if (myer != string.Empty)
+{
+    <p> @myer</p>
+}
+
+<head>
+    <link rel="stylesheet" href="/css/InTransactions.css" />
+</head>
+
+<body>
+    @if ((ClassTEST.USERID == string.Empty) || (ClassTEST.responseToken == string.Empty))
+    {
+        ShowAlert("Please Login First");
+    }
+
+
+    <div class="col-md-12 mb-3">
+        <InputSelect @bind-Value="selectedIncomeId" @onclick="@Refreshlist">
+            Select income
+            @foreach (var item in incomeslist)
+            {
+                <option value="@item.Id">@item.Descript </option>
+            }
+        </InputSelect>
+    </div>
+
+
+
+
+
+    <Div Class="Incometranlist">
+        <Alert Color="Color.Info" Visible>
+            <Paragraph>
+                Income Transactions
+            </Paragraph>
+        </Alert>
+
+        <div class="row">
+            <div class="col-md-6">
+                <Button style="color:forestgreen; border-radius: 4px; border :double;" role="button" @onclick="@AddExtranIncome"> Add Transaction income </Button>
+            </div>
+
+        </div>
+
+        <table class="table table-striped align-middle table-bordered">
+            <thead class="table-header">
+                <tr>
+                    <th>ID</th>
+                    <th>POSTDATE</th>
+                    <th>IncomeName</th>
+                    <th>AMOUNT</th>
+                    <th>DUEDATE</th>
+                    <th>REMINDER</th>
+                    <th>REMINDERDATE</th>
+                    <th>MEMO</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var inctran in IncomeVMtranlist)
+                {
+                    <tr>
+                        <td data-label="1">@inctran.ID</td>      <!-- https://www.puresourcecode.com/programming-languages/htmlcss/responsive-table-layout-with-only-css/-->
+                        <td data-label ="2">@inctran.POSTDATE</td>
+                        <td data-label="3">@inctran.IncomeName</td>
+                        <td data-label="4">@inctran.AMOUNT</td>
+                        <td data-label="5">@inctran.DUEDATE</td>
+                        <td data-label="6">@inctran.REMINDER</td>
+                        <td data-label="7">@inctran.REMINDERDATE</td>
+                        <td data-label="8">@inctran.MEMO</td>
+
+                        <td>
+                            <!-- 
+                            <Button Color="Color.Success" Clicked="@(() => DoEditintran(inctran.ID))">Edit</Button>
+                            <Button Color="Color.Danger" Clicked="@(() => ConfrimDeleteIntran(inctran.ID))">Delete</Button>
+                            -->
+                            <button style="color:forestgreen; border-radius: 4px; border :double;" role="button" @onclick="@(() =>DoEditintran(inctran.ID))"> Edit </button>
+                            <button style="color:red;  border-radius: 4px; border :double;" role="button" @onclick="@(() => ConfrimDeleteIntran(inctran.ID))"> Delete </button>
+
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </Div>
+
+</body>
+
+
+
+@code {
+
+
+    private string stateuser;
+    private string stateidstr;
+    private int UserID = 0;
+
+    private int selectedIncomeId = 0;
+    private List<Income> incomeslist = new List<Income>();  // from dropdopwn list
+
+    private bool modalVisible1;
+    string myer = string.Empty;
+
+    private int idfordel = 0;
+
+
+    private List<IncometranViewModel> IncomeVMtranlist { get; set; } = new List<IncometranViewModel>();
+    private Incometran incometran = new Incometran();
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            /*
+            stateuser = (await ProtectedSessionStore.GetAsync<string>("UserName")).Value ?? string.Empty;
+            stateidstr = (await ProtectedSessionStore.GetAsync<string>("UserID")).Value ?? string.Empty;
+            try { UserID = Convert.ToInt32(stateidstr); } catch { UserID = 0; }
+
+            if ((stateuser != string.Empty) && (UserID > 0))
+                {
+                await Refreshlist(UserID);
+            }
+            */
+
+            await FillDropdownListIncomes(ClassTEST.USERID);
+            await Refreshlist();
+
+        }
+        catch (Exception ee) { myer = ee.Message; }
+    }
+
+
+    protected async Task Refreshlist()
+    {
+        try
+        {
+            int incomeid = selectedIncomeId;
+            await FillInTranList(ClassTEST.USERID,incomeid);
+        }
+        catch (Exception ee) { myer = ee.Message; }
+    }
+
+
+    private async Task FillInTranList(string UserId, int inid)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string queryString = string.Empty;
+            string uriWithParameters = string.Empty;
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Income/GetVmIncomeTran";
+
+            if (inid > 0)
+            {
+                Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId } , {"incomeid" ,inid.ToString() }     };
+                queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+                uriWithParameters = $"{baseUri}?{queryString}";
+
+            }
+            else
+            {
+                Dictionary<string, string> queryParameters = new Dictionary<string, string>{ { "curUserid", UserId }  };
+                queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+                uriWithParameters = $"{baseUri}?{queryString}";
+            }
+
+            var response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                IncomeVMtranlist = await httpClient.GetFromJsonAsync<List<IncometranViewModel>>(uriWithParameters);
+            }
+            else
+                myer = response.StatusCode.ToString();
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+
+    private async Task FillDropdownListIncomes(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT  is IsNullOrEmpty.";
+                return;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Income/FillIncomelist";
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            var response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                incomeslist = await httpClient.GetFromJsonAsync<List<Income>>(uriWithParameters);
+            }
+            else
+            {
+                ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                myer = resultclass.GetErrorString();
+            }
+
+            Income fakeoj = new Income { Id = 0, Descript = "All Incomes" };
+            incomeslist.Add(fakeoj);
+            incomeslist = incomeslist.OrderBy(o => o.Id).ToList();
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+
+
+
+
+
+
+
+
+
+    private async Task<bool> DelInTran(int curid)  // prepei INT ???????????????
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return false;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            //httpClient.DefaultRequestHeaders.Add(curid, 1);
+
+
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Income/DelIncomeTran";
+
+            Dictionary<string, int> queryParameters = new Dictionary<string, int>{ // pass interger parameter to webapi
+                                { "curid", curid }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value.ToString())}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            HttpResponseMessage response = await httpClient.DeleteAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+
+                return true;
+            }
+            else
+            {
+                myer = response.StatusCode.ToString();
+                return false;
+            }
+
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); return false; }
+    }
+
+
+
+
+
+
+
+    async Task AddExtranIncome()
+    {
+        //if (UserID > 0)
+        
+            string param = "0"; // newmode
+            NavigationManager.NavigateTo("/AddtransactionsIncome/" + param);
+        
+    }
+
+
+
+
+    
+
+
+    async Task DoEditintran(int curid)
+    {
+
+        string param = curid.ToString();
+
+            NavigationManager.NavigateTo("/AddtransactionsIncome/" + param);
+
+
+    }
+
+
+
+
+
+    async Task ConfrimDeleteIntran(int curid)
+    {
+
+        try
+        {
+            string param = curid.ToString();
+            idfordel = Convert.ToInt32(param);
+            var res = await DelInTran(idfordel);
+            if (res)
+                await Refreshlist();  // curent user
+        }
+        catch (Exception ee) { myer = ee.Message; }
+
+
+    }
+    
+
+    /*
+    async Task DoDeleteIntran()
+    {
+        string res = string.Empty;
+        try
+        {
+
+            if ((UserID > 0) && (idfordel > 0))
+               // res = await _incomeRep.DelIncomeTranAsync(idfordel);
+
+            if (res == "DB_OK")
+            {
+                idfordel = 0;
+                await HideModal1();
+               // await Refreshlist(UserID);
+            }
+
+        }
+        catch (Exception ee) { myer = ee.Message; }
+    }
+
+    */
+
+    private void ShowAlert(string mes)
+    {
+        Js.InvokeVoidAsync("alert", mes);
+    }
+
+
+    private Task ShowModal(int inx)
+    {
+        if (inx == 0)
+            modalVisible1 = true;
+        else
+            modalVisible1 = true;
+
+        return Task.CompletedTask;
+    }
+
+    
+
+
+    private Task HideModal1()
+    {
+        modalVisible1 = false;
+        return Task.CompletedTask;
+    }
+
+}
+

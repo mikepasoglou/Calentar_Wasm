@@ -1,0 +1,2 @@
+  // https://localhost:7104/api/                    //local 
+  // https://mikepas-001-site2.htempurl.com/api/    //web

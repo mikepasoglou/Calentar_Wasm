@@ -1,0 +1,13 @@
+-Oz
+-s EXPORT_ES6=1
+-v
+-s DISABLE_EXCEPTION_CATCHING=0
+-DDISABLE_PERFTRACING_LISTEN_PORTS=1
+-DLINK_ICALLS=1
+-DCORE_BINDINGS
+-DGEN_PINVOKE=1
+-emit-llvm
+"-IF:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Client\obj\Release\net7.0\wasm\for-publish"
+"-IC:\Program Files\dotnet\packs\Microsoft.NETCore.App.Runtime.Mono.browser-wasm\7.0.3\runtimes\browser-wasm\native\include\mono-2.0"
+"-IC:\Program Files\dotnet\packs\Microsoft.NETCore.App.Runtime.Mono.browser-wasm\7.0.3\runtimes\browser-wasm\native\include\wasm"
+-g

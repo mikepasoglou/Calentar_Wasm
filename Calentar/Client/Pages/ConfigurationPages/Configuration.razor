@@ -1,0 +1,569 @@
+﻿@page "/Configuration"
+
+@inject NavigationManager NavigationManager
+@inject HttpClient httpClient
+@inject IJSRuntime Js;
+@using Calentar.DataTables
+
+
+<html> 
+<head>
+    <link rel="stylesheet" href="/css/Configuration.css" />
+</head>
+
+<body>
+
+
+<p> @myer</p>
+
+@if ((ClassTEST.USERID == string.Empty) || (ClassTEST.responseToken == string.Empty))
+{
+        ShowAlert("Please Login First");
+}
+
+
+
+
+<Div Class="Excat">
+    <Alert Color="Color.Info" Visible>
+        <Paragraph>
+            Εxpense category List
+        </Paragraph>
+    </Alert>
+    <div class="row">
+        <div class="col-md-6">
+                <Button style="color:forestgreen; border-radius: 4px; border :double;" role="button" @onclick="AddExCat"> Add expense category </Button>
+        </div>
+
+    </div>
+    
+    <table class="table table-striped align-middle table-bordered">
+        <thead class="table-success">
+            <tr>
+                <th>ID</th>
+                <th>descript</th>
+                <th>SUMAMOUNT</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var myitem in excatlist)
+            {
+                <tr>
+                    <td>@myitem.Id </td>
+                    <td>@myitem.Descript </td>
+                    <td>@myitem.Sumamount </td>
+                    
+                    <td>
+                        <!-- 
+                        <Button Color="Color.Success" Clicked="@(() => DoEditCat(myitem.Id))">Edit</Button>
+                        <Button Color="Color.Danger" Clicked="@(() => ConfrimDeleteCat(myitem.Id))">Delete</Button>
+                            -->
+                       <Button style="color:forestgreen; border-radius: 4px; border :double;" role="button" @onclick="@(() => DoEditCat(myitem.Id))"> Edit </Button>
+                       <Button style="color:red;  border-radius: 4px; border :double;" role="button" @onclick="@(() => ConfrimDeleteCat(myitem.Id))"> Delete </Button>
+                    </td>
+                    
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</Div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<Div Class="Expense">
+    <Alert Color="Color.Info" Visible>
+        <Paragraph>
+            Εxpenses List
+        </Paragraph>
+    </Alert>
+
+
+    <div class="row">
+        <div class="col-md-6">
+            <Button style="color:forestgreen; border-radius: 4px; border :double;" role="button" @onclick="CreatenewEx"> Add Expense </Button>
+        </div>
+
+    </div>
+
+    <table class="table table-striped align-middle table-bordered">
+        <thead class="table-success">
+            <tr>
+                <th>Descript</th>
+                <th>CatDescript</th>
+            <!--  <th>ExSumamount</th>  -->
+                <th>CatSumamount</th>
+                <th>Memo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var myitem in Expenseslist)
+            {
+                <tr>
+                    <td>@myitem.Descript </td>
+                    <td>@myitem.CatDescript </td>
+                <!--  <td>@myitem.ExSumamount </td> -->
+                    <td>@myitem.CatSumamount </td>
+                    <td>@myitem.Memo </td>
+                    <td>
+                        <!--
+                    <Button Color="Color.Success" Clicked="@(() => DoEditIncCat(myitem.Exviewid))">Edit</Button>   lathos method kane new  
+                    <Button Color="Color.Danger" Clicked="@(() => ConfrimDeleteIncCat(myitem.Exviewid))">Delete</Button>   lathos method kane new 
+                    -->
+                    <Button style="color:forestgreen; border-radius: 4px; border :double;" role="button" @onclick="@(() => DoEditIncCat(myitem.Exviewid))"> Edit </Button>
+                    <Button style="color:red;  border-radius: 4px; border :double;" role="button" @onclick="@(() => ConfrimDeleteIncCat(myitem.Exviewid))"> Delete </Button>
+                    </td>
+                
+                </tr>
+            }
+        </tbody>
+    </table>
+    </Div>
+
+
+
+
+
+
+
+<Div Class="Incat">
+    <Alert Color="Color.Info" Visible>
+        <Paragraph>
+            Income Category List
+        </Paragraph>
+    </Alert>
+
+
+
+    <div class="row">
+        <div class="col-md-6">
+                <Button style="color:forestgreen; border-radius: 4px; border :double;" role="button" @onclick="AddIncomecat"> Add income category </Button>
+        </div>
+
+    </div>
+
+    <table class="table table-striped align-middle table-bordered">
+        <thead class="table-success">
+            <tr>
+                <th>ID</th>
+                <th>descript</th>
+                <th>SUMAMOUNT</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var myitem in incatlist)
+            {
+                <tr>
+                    <td>@myitem.Id </td>
+                    <td>@myitem.Descript </td>
+                    <td>@myitem.Sumamount </td>
+
+                    <td>
+                       <Button style="color:forestgreen; border-radius: 4px; border :double;" role="button" @onclick="@(() => DoEditIncCat(myitem.Id))">Edit</Button>
+                       <Button style="color:red; border-radius: 4px; border :double;" role="button" @onclick="@(() => ConfrimDeleteIncCat(myitem.Id))">Delete</Button>
+                    </td>
+
+
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+
+
+    <Div Class="Income">
+    <Alert Color="Color.Info" Visible>
+        <Paragraph>
+            Income List
+        </Paragraph>
+    </Alert>
+
+
+
+    <div class="row">
+        <div class="col-md-6">
+             <Button style="color:forestgreen; border-radius: 4px; border :double;" role="button" @onclick="AddIncome"> Add income  </Button>
+        </div>
+
+    </div>
+    <table class="table table-striped align-middle table-bordered">
+        <thead class="table-success">
+            <tr>
+                <th>Descript</th>
+                <th>CatDescript</th>
+                <th>CatSumamount</th>
+                <!--  <th>InSumamount</th> -->
+                <th>Memo</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var myitem in incomelist)
+            {
+                <tr>
+                    <td>@myitem.Descript </td>
+                    <td>@myitem.CatDescript </td>
+                    <td>@myitem.CatSumamount </td>
+                    <!--   <td>@myitem.InSumamount </td>  -->
+                    <td>@myitem.Memo </td>
+
+                    <td>
+                        <Button style="color:forestgreen; border-radius: 4px; border :double;" role="button" @onclick="@(() => DoEditIncome(myitem.Id))">Edit</Button>
+                        <Button style="color:red; border-radius: 4px; border :double;" role="button" @onclick="@(() => ConfrimDeleteIncome(myitem.Id))">Delete</Button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</Div>
+</Div>
+
+</body>
+</html>
+
+
+
+@code {
+
+
+
+    private string stateuser;
+    private string stateidstr;
+    private int UserID = 0;
+    string myer = string.Empty;
+
+
+    private IEnumerable<Exviewmodel>? Expenseslist { get; set; } = new List<Exviewmodel>();
+
+    private IEnumerable<Excategory> excatlist { get; set; } = new List<Excategory>();
+
+
+    private IEnumerable<Incategory> incatlist { get; set; } = new List<Incategory>();
+    private IEnumerable<IncomeViewModel> incomelist { get; set; } = new List<IncomeViewModel>();
+
+
+    private void ShowAlert(string mes)
+    {
+        Js.InvokeVoidAsync("alert", mes);
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+
+
+            // stateuser = (await ProtectedSessionStore.GetAsync<string>("UserName")).Value ?? string.Empty;
+            // stateidstr = (await ProtectedSessionStore.GetAsync<string>("UserID")).Value ?? string.Empty;
+          //  try { UserID = Convert.ToInt32(stateidstr); } catch { UserID = 0; }
+
+            //if ((stateuser != string.Empty) && (UserID > 0))
+            {
+                await Refreshlist();
+            }
+        }
+        catch (Exception ee) { myer = ee.Message; }
+    }
+
+
+    protected  async Task Refreshlist()
+    {
+        try
+        {
+            await FillExList(ClassTEST.USERID);
+            await FillExCatList(ClassTEST.USERID);
+            await FillInCatList(ClassTEST.USERID);
+            await FillInList(ClassTEST.USERID);
+        }
+        catch (Exception ee) { myer = ee.Message; }
+    }
+
+
+    private async Task FillExList(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Expense/GetAllExpenses";
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            var response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                Expenseslist = await httpClient.GetFromJsonAsync<IEnumerable<Exviewmodel>>(uriWithParameters);
+            }
+            else
+                myer = response.StatusCode.ToString();
+
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+    private async Task FillInList(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Income/GetAllIncomes";
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            var response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                incomelist = await httpClient.GetFromJsonAsync<IEnumerable<IncomeViewModel>>(uriWithParameters);
+            }
+            else
+                myer = response.StatusCode.ToString();
+
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+
+
+
+
+
+    private async Task FillExCatList(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Expense/GetAllExpCategories";
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            var response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                excatlist = await httpClient.GetFromJsonAsync<IEnumerable<Excategory>>(uriWithParameters);
+            }
+            else
+                myer = response.StatusCode.ToString();
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+
+    private async Task FillInCatList(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Income/GetAllIncCategories";
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            var response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                incatlist = await httpClient.GetFromJsonAsync<IEnumerable<Incategory>>(uriWithParameters);
+            }
+            else
+                myer = response.StatusCode.ToString();
+
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+
+
+
+
+    private void CreatenewEx()
+    {
+            NavigationManager.NavigateTo("/ConfigurationCRDU");
+    }
+
+    void Cancel()
+    {
+
+    }
+
+
+
+
+
+
+
+    async Task AddIncome()
+    {
+        
+            // string param = "0"; // newmode
+            //NavigationManager.NavigateTo("/AddExCategory/" + param);
+            NavigationManager.NavigateTo("/AddIncome");
+        
+    }
+
+
+     void AddExCat()
+    {
+
+        NavigationManager.NavigateTo("/AddExCategory");
+
+        //if (UserID > 0)
+           // string param = "0"; // newmode
+            //NavigationManager.NavigateTo("/AddExCategory/" + param);
+            
+    }
+
+    async Task AddIncomecat()
+    {
+            // string param = "0"; // newmode
+            //NavigationManager.NavigateTo("/AddExCategory/" + param);
+            NavigationManager.NavigateTo("/AddIcCategory");
+        
+    }
+
+    async Task DoEditCat(int curid)
+    {
+
+        string param = curid.ToString();
+
+        if (UserID > 0)
+            NavigationManager.NavigateTo("/iiiiiii/" + param);
+
+
+    }
+    //
+
+    async Task DoEditIncome(int curid)
+    {
+
+        string param = curid.ToString();
+
+        if (UserID > 0)
+            NavigationManager.NavigateTo("/iiiiiii/" + param);
+
+
+    }
+
+
+    async Task DoEditIncCat(int curid)
+    {
+
+        string param = curid.ToString();
+
+        if (UserID > 0)
+            NavigationManager.NavigateTo("/iiiiiii/" + param);
+
+
+    }
+
+
+    async Task ConfrimDeleteCat(int curid)
+    {
+
+        try
+        {
+            string param = curid.ToString();
+            //idfordel = Convert.ToInt32(param);
+        }
+        catch (Exception ee) { myer = ee.Message; }
+
+       // await ShowModal();
+
+    }
+
+    async Task ConfrimDeleteIncCat(int curid)
+    {
+
+        try
+        {
+            string param = curid.ToString();
+            //idfordel = Convert.ToInt32(param);
+        }
+        catch (Exception ee) { myer = ee.Message; }
+
+        // await ShowModal();
+
+    }
+
+
+    async Task ConfrimDeleteIncome(int curid)
+    {
+
+        try
+        {
+            string param = curid.ToString();
+            //idfordel = Convert.ToInt32(param);
+        }
+        catch (Exception ee) { myer = ee.Message; }
+
+        // await ShowModal();
+
+    }
+
+}

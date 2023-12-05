@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="IIS Web Application Name" description="" value="mikepas-001-site3" tags="IisApp">
+    <parameterEntry kind="ProviderPath" scope="IisApp" match="^F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\obj\\Release\\net7\.0\\browser-wasm\\PubTmp\\Out\\$" />
+  </parameter>
+</parameters>

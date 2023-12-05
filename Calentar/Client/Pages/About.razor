@@ -1,0 +1,50 @@
+﻿@page "/About"
+@inject IJSRuntime JSRuntime
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head> </head>
+
+<body>
+    <h3>  LinkedIn Profile  </h3>
+    <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="dark" data-type="VERTICAL" data-vanity="michalis-pasoglou-592959292" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://gr.linkedin.com/in/michalis-pasoglou-592959292?trk=profile-badge">Michalis Pasoglou</a></div>
+    
+    <!--
+        
+    <button @onclick="LoadLinkedInScript">Load LinkedIn Script</button>
+    -->
+</body>
+</html>
+
+
+@code {
+
+
+    async Task LoadLinkedInScript()
+    {
+         await JSRuntime.
+         InvokeVoidAsync("eval", "var script = document.createElement('script'); script.src = 'https://platform.linkedin.com/badges/js/profile.js'; document.body.appendChild(script);");
+    }
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LoadLinkedInScript();
+
+
+
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+
+
+    }
+
+}

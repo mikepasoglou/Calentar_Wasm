@@ -1,0 +1,228 @@
+﻿@page "/AddIncome"
+@inject NavigationManager NavigationManager
+@inject HttpClient httpClient
+@using Calentar.DataTables
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            background-color: antiquewhite;
+            /*background: linear-gradient(#80FFDB, #3190D9);*/
+           /* background-image: url("/images/bg.jpg"); */
+        }
+
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            width: 50%;
+            float: left;
+            margin-left: 10px;
+            display: flex;
+            justify-content: center;
+            align-content:center;
+            background-color: antiquewhite;
+        }
+
+            .card:hover {
+                box-shadow: 0 8px 36px 0 rgba(0, 0, 0, 0.5);
+            }
+
+       
+
+        .flex-container {
+            display: flex;
+            justify-content: space-around;
+            background: #fff;
+            background-color: antiquewhite;
+        }
+      
+
+    </style>
+</head>
+
+<body>
+
+<div class="flex-container">
+    <div class="card" style="">
+        <h4 class="card-header">Add Income</h4>
+        <div class="card-body">
+
+<form>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="Descript" class="control-label">Descript</label>
+                <input for="Descript" class="form-control" @bind="@income.Descript" />
+            </div>
+
+
+            <div class="form-group">
+                <InputSelect class="form-select" @bind-Value="income.Category">
+                    <option value="">Select income Category </option>
+                    @foreach (var exp in incomeCatList)
+                    {
+                        <option value="@exp.Id">@exp.Descript </option>
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="form-group">
+                <label for="Category" class="control-label">Category</label>
+                <InputNumber readonly @bind-Value="income.Category" />
+            </div>
+
+            <div class="form-group">
+                <label for="Userid" class="control-label">Userid</label>
+                <input for="Userid" class="form-control" @bind="@income.Userid" />
+            </div>
+            <div class="form-group">
+                <label for="Memo" class="control-label">Memo</label>
+                <input for="Memo" class="form-control" @bind="@income.Memo" />
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <input type="button" class="btn btn-primary" @onclick="@Save" value="Save" />
+                <input type="button" class="btn" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</form>
+
+</div>
+</div>
+</div>
+
+</body></html>
+
+
+
+
+
+
+@code {
+
+    string myer = string.Empty;
+
+    private Income income = new Income();
+
+    private IEnumerable<Incategory> incomeCatList = new List<Incategory>();  // for dropdopwn list
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // incomeCatList = await _incomeRep.GetAllIncCategories(GLClass.Userid);
+            await FillInCatList(ClassTEST.USERID);
+        }
+        catch (Exception ee) { myer = ee.Message; }
+    }
+
+
+
+    private async Task FillInCatList(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Income/GetAllIncCategories";
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            var response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                incomeCatList = await httpClient.GetFromJsonAsync<IEnumerable<Incategory>>(uriWithParameters);
+            }
+            else
+                myer = response.StatusCode.ToString();
+
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+    private async Task Addincome(Income model, string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            model.Userid = UserId; // ??????????????????????????????????????
+
+            if (model.Memo == null) // temporary . Fix it Db script 
+                model.Memo = " ";
+
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Income/AddIncome";
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync<Income>(baseUri, model);
+            if (response.IsSuccessStatusCode)
+            {
+                // ......
+            }
+            else
+                myer = response.StatusCode.ToString();
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+
+
+
+
+
+    protected async Task Save()
+    {
+        {
+          //  await _incomeRep.AddIncome(income);
+            await Addincome(income, ClassTEST.USERID);
+
+            //  *************IF OK  
+            NavigationManager.NavigateTo("/Configuration");
+            // ELSE error hand..
+        }
+
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("/Configuration");
+    }
+
+
+    
+    }
+    
+
+
+
+

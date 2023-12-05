@@ -1,0 +1,127 @@
+﻿@page "/Scheduler"
+
+@inject HttpClient httpClient
+@using Calentar.Client
+
+
+<!-- 
+<BlazorScheduler.Scheduler OnAddingNewAppointment="OnAddingNewAppointment" OnRequestNewData="OnLoadCalendar" EnableRescheduling="true">
+    <Appointments>
+        @foreach (var app in appointmentsList)
+        {
+            <BlazorScheduler.Appointment Start="@app.STARTDATE" End="@app.ENDDATE" 
+                                     Class="@app.MESSAGE">
+                @app.MESSAGE
+                @if (context.IsTimed)
+                {
+                    <span>- @app.STARTDATE.ToString("htt") to @app.ENDDATE.ToString("htt")</span>
+                }
+            </BlazorScheduler.Appointment>
+        }
+    </Appointments>
+</BlazorScheduler.Scheduler>
+
+-->
+
+
+@code {
+
+
+    public class AppointmentDto
+    {
+        public string Title { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+        public string Color { get; set; }
+        public string? Class { get; set; }
+    }
+
+    string myer;
+
+
+    private List<AppointmentDto> _appointments = new();
+    private List<AppointmentVM> appointmentsList = new List<AppointmentVM>(); // mike
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            
+        }
+    }
+
+
+
+
+    private async Task<List<AppointmentVM>> FillSheduler(string UserId)
+    {
+        List<AppointmentVM>? mylist = new List<AppointmentVM>();
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return null;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            //string baseUri = "https://mikepas-001-site2.htempurl.com/api/Appointment/GetAppointmentsList";
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Appointment/GetAppointmentsList";
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curusrid", UserId }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                mylist = await httpClient.GetFromJsonAsync<List<AppointmentVM>>(uriWithParameters);
+                return mylist;
+            }
+            else
+            {
+                myer = response.StatusCode.ToString();
+                return null;
+            }
+
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); return null; }
+    }
+
+
+
+
+
+
+    async Task OnLoadCalendar(DateTime start, DateTime end)
+    {
+        // _appointments = AppointmentServiceDEL.GetAppointments(start, end).ToList();
+
+        appointmentsList = await FillSheduler(ClassTEST.USERID);
+        return;
+    }
+
+   
+
+    Task OnAddingNewAppointment(DateTime start, DateTime end)
+    {
+        _appointments.Add(new AppointmentDto { Start = start, End = end, Title = "A newly added appointment!", Color = "aqua" });
+        return Task.CompletedTask;
+    }
+
+    Task HandleReschedule(AppointmentDto appointment, DateTime newStart, DateTime newEnd)
+    {
+        appointment.Start = newStart;
+        appointment.End = newEnd;
+
+        return Task.CompletedTask;
+    }
+}
+

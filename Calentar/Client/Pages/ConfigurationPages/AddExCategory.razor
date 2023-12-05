@@ -1,0 +1,129 @@
+﻿@page "/AddExCategory"
+@inject NavigationManager NavigationManager
+@inject HttpClient httpClient
+@inject IJSRuntime Js;
+@using Calentar.DataTables
+@using Calentar.Client.DataModels
+
+<p> AddExCategory </p>
+
+
+<!DOCTYPE html>
+<html>
+<head> </head>
+<body> 
+@if (myer != string.Empty)
+{
+    
+        ShowAlert(myer);
+}
+
+
+<form>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="Descript" class="control-label">Descript</label>
+                <input for="Descript" class="form-control" @bind="@expensecat.Descript" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <input type="button" class="btn btn-primary" @onclick="@Save" value="Save" />
+                <input type="button" class="btn" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</form>
+
+</body></html>
+
+
+@code {
+
+
+    private string myer = string.Empty;
+    private Excategory expensecat = new Excategory();
+
+    protected async Task Save()
+    {
+         if (await AddexCategory(expensecat, ClassTEST.USERID))
+            NavigationManager.NavigateTo("/Configuration");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("/Configuration");
+    }
+
+    private void ShowAlert(string mes)
+    {
+        Js.InvokeVoidAsync("alert", mes);
+    }
+
+
+    private async Task<bool> AddexCategory(Excategory model, string UserId)
+    {
+        try
+        {
+            myer = string.Empty;
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return false;
+            }
+
+            model.Userid = UserId; // check
+           
+            httpClient.DefaultRequestHeaders.Clear(); 
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Expense/AddExpensCategory";
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync<Excategory>(baseUri, model);
+            if (response.IsSuccessStatusCode)
+            {
+                return true; 
+            }
+            else
+            {
+                ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                myer = resultclass.GetErrorString();
+                return false;
+
+                /*
+                ErrorResponse resultclass = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                myer = resultclass.GetErrorString();
+                */
+
+                /* IS OK  OK
+                //  IS OK 
+                ErrorResponse resultclass = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                int status = resultclass.Status;
+                myer += status + "  ";
+                    if (resultclass.Errors != null)
+                    {
+                    if (resultclass.Errors.Keys.Count > 0)
+                        {
+                        foreach (var errorKey in resultclass.Errors.Keys)
+                            {
+                            string[] errorMessages = resultclass.Errors[errorKey];
+                            foreach (var errorMessage in errorMessages)
+                                {
+                                myer += errorKey + "    " + errorMessage + "  ";
+                        }
+                    }
+                }
+                }
+            */
+            }
+        }
+        catch (Exception ex) { myer= ex.Message; return false; }
+    }
+
+
+}
+
+

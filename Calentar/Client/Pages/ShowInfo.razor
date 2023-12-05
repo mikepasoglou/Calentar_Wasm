@@ -1,0 +1,279 @@
+﻿@page "/ShowInfo"
+@using System.Globalization
+@using Calentar.Client.DataModels;
+@using Calentar.DataTables
+@inject HttpClient httpClient
+@inject IJSRuntime Js;
+
+
+
+<html>
+<head>
+    <link rel="stylesheet" href="/css/ShowInfo.css" />
+
+</head>
+
+<body>
+    @if ((ClassTEST.USERID == string.Empty) || (ClassTEST.responseToken == string.Empty))
+    {
+         ShowAlert("Please Login First");
+    }
+
+
+    
+    <div class="row">
+        <div class="column" style="background-color:#aaa;">
+            <div class="card" style="width: 90%;">
+                <h3 class="card-header">Expenses Tree</h3>
+                <div class="card-body" style="background-color:aqua">
+                    <div class="Expensetree">
+                        @foreach (var node in TreeNodesListExpense)
+                        {
+                            <div>
+                                <span @onclick="ToggleNode"><strong>  Category  @node.Label </strong><span>   Sum @node.Sum.ToString("#####0.00")</span></span>
+                                @if (IsEXChildExpanded && node.Children != null)
+                                {
+                                    <ul>
+                                        @foreach (var childNode in node.Children)
+                                        {
+                                            <li>
+                                                <div>
+                                                    <span>@childNode.Label</span> <span>Sum   @childNode.Sum.ToString("#####0.00")</span>
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="column" style="background-color:#bbb;">
+            <div class="card" style="width: 90%;">
+                <h3 class="card-header">Incomes Tree</h3>
+                <div class="card-body" style="background-color:aqua" >
+                    <div class="Incometree">
+                        @foreach (var node in TreeNodesListIncome)
+                        {
+                            <div>
+                                <span @onclick="ToggleNode1"><strong>  Category  @node.Label </strong>  <span>   Sum @node.Sum.ToString("#####0.00")</span></span>
+                                @if (IsINChildExpanded && node.Children != null)
+                                {
+                                    <ul>
+                                        @foreach (var childNode in node.Children)
+                                        {
+                                            <li>
+                                                <div>
+                                                    <span>@childNode.Label</span>    <span>Sum   @childNode.Sum.ToString("#####0.00")</span>
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+  </div>
+
+</body> </html>
+
+@code {
+
+    private string myer=string.Empty;
+    public class TreeNodeViewModel
+    {
+        public bool IsChildExpanded { get; set; }
+        public string Label { get; set; }
+        public decimal Sum { get; set; }
+        public List<TreeNodeViewModel> Children { get; set; } = new List<TreeNodeViewModel>();
+        //  List<Tuple<string, double>> myList = new List<Tuple<string, double>>();
+    }
+
+    bool IsEXChildExpanded = false;
+    bool IsINChildExpanded = false;
+    private List<TreeNodeViewModel> TreeNodesListExpense { get; set; } = new List<TreeNodeViewModel>();
+    private List<TreeNodeViewModel> TreeNodesListIncome { get; set; } = new List<TreeNodeViewModel>();
+
+
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+
+        }
+    }
+
+
+    protected override async void OnInitialized()
+    {
+        base.OnInitialized();
+        //InitializeTreeListVer1();  for test only
+        await FillTreeEx(ClassTEST.USERID);
+        await FillTreeIn(ClassTEST.USERID);
+        StateHasChanged();
+    }
+
+
+
+
+
+
+
+
+    private async Task FillTreeEx(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+            //https://mikepas-001-site2.htempurl.com/api/
+            //string baseUri = "https://mikepas-001-site2.htempurl.com/api/Expense/FillTreeExpenses";
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Dashboard/FillTreeExpenses";  //   prosoxi allo api
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            var response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                TreeNodesListExpense = await httpClient.GetFromJsonAsync<List<TreeNodeViewModel>>(uriWithParameters);
+                /*
+                foreach (var item in TreeNodesList)
+                    {
+                    var Childlist = item.Children;
+                    foreach (var c in Childlist )
+                        {
+                        var expenseid = c.Id;
+
+                }
+                }*/
+            }
+            else
+            {
+                ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                myer = resultclass.GetErrorString();
+            }
+
+
+            // StateHasChanged();  // oxi edo ********************************************
+        }
+        catch (Exception ex) { myer = ex.Message; }
+    }
+
+
+
+
+
+
+
+    private async Task FillTreeIn(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Dashboard/FillTreeIncomes";  //  allo api PROSOXI
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            var response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                TreeNodesListIncome = await httpClient.GetFromJsonAsync<List<TreeNodeViewModel>>(uriWithParameters);
+
+            }
+            else
+            {
+                ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                myer = resultclass.GetErrorString();
+            }
+
+        }
+        catch (Exception ex) { myer = ex.Message; }
+    }
+
+
+
+   
+
+    void ToggleNode()
+    {
+        IsEXChildExpanded = !IsEXChildExpanded;
+    }
+
+    void ToggleNode1()
+    {
+        IsINChildExpanded = !IsINChildExpanded;
+    }
+
+
+
+    private List<TreeNodeViewModel> InitializeTreeListVer1()
+    {
+        TreeNodesListExpense = new List<TreeNodeViewModel>
+        {
+        new TreeNodeViewModel
+            {
+            Label = "Category1",
+            Sum=1212,
+            Children = new List<TreeNodeViewModel>
+                {
+                new TreeNodeViewModel {Label = "ExpenseCat1 1",  Sum =120   },
+                new TreeNodeViewModel {Label = "ExpenseCat1 2",  Sum =3120  }
+        }
+        },
+        {
+        new TreeNodeViewModel
+           {
+           Label = "Category2",
+           Sum=221,
+           Children = new List<TreeNodeViewModel>
+                {
+                new TreeNodeViewModel {Label = "ExpenseCat2 1",  Sum =120   },
+                new TreeNodeViewModel {Label = "ExpenseCat2 2",  Sum =3120  },
+                new TreeNodeViewModel {Label = "ExpenseCat2 3",  Sum =2  },
+                new TreeNodeViewModel {Label = "ExpenseCat2 4",  Sum =55  }
+           }
+        }
+        }
+        };
+
+        return TreeNodesListExpense;
+    }
+
+
+    private async Task ShowAlert(string mes)
+    {
+        await Js.InvokeVoidAsync("alert", mes);
+    }
+
+
+
+
+
+}
+

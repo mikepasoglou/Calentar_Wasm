@@ -1,0 +1,756 @@
+﻿@page "/ShowBlazorizeCharts"
+@inject HttpClient httpClient
+@inject IJSRuntime Js;
+@using Calentar.DataTables
+@using Calentar.Client.DataModels;
+
+
+<html> 
+<head>
+     <link rel="stylesheet" href="/css/Dashboard.css" />  
+
+</head>
+
+<body>
+    @if ((ClassTEST.USERID == string.Empty) || (ClassTEST.responseToken == string.Empty))
+    {
+        <!-- Please Login First  -->
+    }
+
+
+    
+ <div class="row">
+        <div class="column">
+            <div class="card">
+                <h3 class="card-header">Expense Chart</h3>
+                <div class="card-body">
+                     <Chart @ref="ExpenseChart" TItem="double" Type="ChartType.Line"> </Chart>
+                     <Button Color="Color.Primary" Clicked="@(async () => await Drawchart_Expenses(UserID))">Refresh</Button>
+                </div>
+            </div>
+        </div>
+
+        <div class="column" style="background-color:#bbb;">
+            <div class="card">
+                <h3 class="card-header">Expense Category Chart</h3>
+                <div class="card-body">
+                    <Chart @ref="ExpenseCategoriesChart" TItem="double" Type="ChartType.Line"> </Chart>
+                    <Button Color="Color.Primary" Clicked="@(async () => await Drawchart_ExpenseCategory(UserID))">Refresh</Button>
+                </div>
+            </div>
+        </div>
+
+        <div class="column" style="background-color:#ccc;">
+            <div class="card">
+                <h3 class="card-header">Income Chart</h3>
+                <div class="card-body">
+                    <Chart @ref="IncomeChart" TItem="double" Type="ChartType.Line"> </Chart>
+                    <Button Color="Color.Primary" Clicked="@(async () => await Drawchart_Incomes(UserID))">Refresh</Button>
+                </div>
+            </div>
+        </div>
+
+        <div class="column" style="background-color:#ddd;">
+            <div class="card">
+                <h3 class="card-header">Income Category Chart</h3>
+                <div class="card-body">
+                    <Chart @ref="IncomeCategoriesChart" TItem="double" Type="ChartType.Line"> </Chart>
+                    <Button Color="Color.Primary" Clicked="@(async () => await Drawchart_IncomeCategory(UserID))">Refresh</Button>
+                </div>
+            </div>
+        </div>
+  </div>
+
+
+</body></html>
+
+
+
+
+
+
+@code {
+
+    //private  LineChart<double> lineChart;
+    //private double SumExYear = 0;
+    private double SumAllExYear = 0;
+    private double SumAllInYear = 0;
+    //private string stateuser;
+    //private string stateidstr;
+    private string UserID = string.Empty;
+
+
+    Chart<double> ExpenseChart;
+    Chart<double> IncomeChart;
+
+    Chart<double> ExpenseCategoriesChart;
+    Chart<double> IncomeCategoriesChart;
+
+    //private string selectedSlide = "4";
+    //ChartTrendline<double?> chartTrendline;
+    //bool trendlinesOn = true;
+
+    string myer = string.Empty;
+
+    List<string> backgroundColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 0.2f), ChartColor.FromRgba(54, 162, 235, 0.2f), ChartColor.FromRgba(255, 206, 86, 0.2f), ChartColor.FromRgba(75, 192, 192, 0.2f), ChartColor.FromRgba(153, 102, 255, 0.2f), ChartColor.FromRgba(255, 159, 64, 0.2f) };
+    List<string> borderColors = new List<string> { ChartColor.FromRgba(255, 99, 132, 1f), ChartColor.FromRgba(54, 162, 235, 1f), ChartColor.FromRgba(255, 206, 86, 1f), ChartColor.FromRgba(75, 192, 192, 1f), ChartColor.FromRgba(153, 102, 255, 1f), ChartColor.FromRgba(255, 159, 64, 1f) };
+
+
+    public class SumPerMonthDto
+    {
+        public double SumPerMonth { get; set; }
+        public int Year { get; set; }
+        public int Month { get; set; }
+    }
+
+
+
+    public class SumPerExCat
+    {
+        public int ExpenseId { get; set; }
+        public int CatId { get; set; }
+        public string CatName { get; set; }
+        public double SumPerCatPerMonth { get; set; }
+        public int Year { get; set; }
+        public int Month { get; set; }
+
+    }
+
+
+    public class SumPerInCat
+    {
+
+        public int IncomeId { get; set; }
+        public int CatId { get; set; }
+        public string CatName { get; set; }
+        public double SumPerCatPerMonth { get; set; }
+        public int Year { get; set; }
+        public int Month { get; set; }
+
+    }
+
+
+
+    /*/
+    public class SumPerMonthDtoView
+    {
+        public double SumPerMonth { get; set; }
+        public int Year { get; set; }
+        public string Month { get; set; }
+        public string Descipt { get; set; }
+    }
+    */
+
+    private List<SumPerMonthDto> SumPermonthPerexlist;
+    private List<SumPerMonthDto> SumPermonthPerInlist;
+    
+    private List<string> LabelList;
+    private List<int> IdList;
+
+
+
+
+
+    private static string[] XLabels = new string[] { "January", "February", "March", "April", "May", "June", "Jule", "August", "September", "Oktber", "Nobember", "December" };
+    private static string[] BackgroundColors = new string[12] { "#4bc1c0", "#36a2eb", "#ff3d88", "#4cc0c0", 
+                                                           "#30a2eb", "#ff3188", "#4bh0c0", "#31a2eb", "#fg3d88", "#f13d88", "#3212eb", "#f16d88" };
+
+    private static string[] BorderColors = new string[12] { "#4bc0c0", "#36a2eb", "#ff3d88", "#4bc0c0",
+                                                           "#36a2eb", "#ff3d88", "#4bc0c0", "#36a2eb", "#ff3d88", "#4bc0c0", "#36a2eb", "#ff3d88" };
+
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+        UserID = ClassTEST.USERID;
+        await Drawchart_Expenses(ClassTEST.USERID);
+        await Drawchart_Incomes(ClassTEST.USERID);
+        await Drawchart_ExpenseCategory(ClassTEST.USERID);
+        await Drawchart_IncomeCategory(ClassTEST.USERID);
+    }
+
+
+
+    private async Task Drawchart_Expenses(string curuserid)
+    {
+
+        int cnt = 0;
+        LabelList = await GetExpenseLabels(curuserid);
+        IdList = await GetExpenseid(curuserid);
+
+        await ExpenseChart.Clear();
+        await ExpenseChart.AddLabels(XLabels);
+
+        //double SumExYear = 0;
+
+        foreach (var item in IdList)
+        {
+            SumPermonthPerexlist = await GetExpenseSumPerMonth(curuserid, item);
+            if (SumPermonthPerexlist.Count > 0)
+            {
+                await ExpenseChart.AddDataSet(GetDataset(SumPermonthPerexlist, cnt));
+            }
+            cnt++;
+            SumPermonthPerexlist.Clear();
+        }
+        await ExpenseChart.Update();
+
+    }
+
+
+    private async Task Drawchart_ExpenseCategory(string curuserid)
+    {
+        LabelList.Clear();
+        IdList.Clear();
+        //LabelList = await GetExpenseLabels(curuserid);
+        //IdList = await GetExpenseid(curuserid);
+
+        await ExpenseCategoriesChart.Clear();
+        await ExpenseCategoriesChart.AddLabels(XLabels);
+
+
+        List<SumPerExCat> SumCatList;
+        SumCatList = await GetSumExPerMonthPerCat(curuserid);
+
+        List<SumPerExCat> SortedList = SumCatList.OrderBy(o => o.CatId).ToList();  // new ******************************
+
+
+        List<double> amaountlist = new List<double>();
+        double[] amountarray = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  // sumamount of 12 months
+
+        string label = string.Empty;
+        int fCatid = SumCatList[0].CatId;
+        int lCatid = SumCatList[0].CatId;
+        for (int i = 0; i < SumCatList.Count; i++)
+        {
+            if (fCatid == lCatid)
+            {
+                int curidx = (SumCatList[i].Month) - 1;
+                amountarray[curidx] += SumCatList[i].SumPerCatPerMonth;
+                label = SumCatList[i].CatName;
+
+            }
+            else
+            {
+
+                amaountlist = amountarray.ToList();
+                await ExpenseCategoriesChart.AddDataSet(GetDatasetExCat(amaountlist, label));
+
+                for (int j = 0; j <= 11; j++)
+                {
+                    amountarray[j] = 0;
+                }
+                amaountlist.Clear();
+
+                fCatid = SumCatList[i].CatId;
+
+                int curidx = (SumCatList[i].Month) - 1;
+                amountarray[curidx] += SumCatList[i].SumPerCatPerMonth;
+                label = SumCatList[i].CatName;
+            }
+
+            if (i < SumCatList.Count - 1)
+                lCatid = SumCatList[i + 1].CatId;
+            else
+                lCatid = SumCatList[i].CatId;
+
+        }
+
+
+        bool hasrows = false;
+        for (int ff = 0; ff < amountarray.Length; ff++)
+        {
+            if (amountarray[ff] > 0)
+                hasrows = true;
+
+        }
+        if (hasrows)
+        {
+            amaountlist = amountarray.ToList();
+            await ExpenseCategoriesChart.AddDataSet(GetDatasetExCat(amaountlist, label));
+        }
+
+        await ExpenseCategoriesChart.Update();
+
+    }
+
+
+
+
+
+    private async Task Drawchart_Incomes(string curid)
+    {
+
+        int cnt = 0;
+        LabelList.Clear();
+        IdList.Clear();
+        LabelList = await GetIncomeLabels(curid);
+        IdList = await GetIncomeid(curid);
+
+        await IncomeChart.Clear();
+        await IncomeChart.AddLabels(XLabels);
+
+        foreach (var item in IdList)
+        {
+            SumPermonthPerInlist = await GetIncomeSumPerMonth(curid, item);
+            if (SumPermonthPerInlist.Count > 0)
+            {
+                await IncomeChart.AddDataSet(GetDataset(SumPermonthPerInlist, cnt));
+            }
+            cnt++;
+            SumPermonthPerInlist.Clear();
+        }
+        await IncomeChart.Update();
+
+    }
+
+
+    private async Task Drawchart_IncomeCategory(string curid)
+    {
+        LabelList.Clear();
+        IdList.Clear();
+        await IncomeCategoriesChart.Clear();
+        await IncomeCategoriesChart.AddLabels(XLabels);
+
+        List<SumPerInCat> IncSumcaplist;
+        IncSumcaplist = await GetSumIncPerMonthPerCat(curid);
+
+        List<SumPerInCat> SortedList = IncSumcaplist.OrderBy(o => o.CatId).ToList();//******************************************/
+
+        List<double> amaountlist = new List<double>();
+        double[] amountarray = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  // sumamount of 12 months
+
+        string label = string.Empty;
+        int fCatid = SortedList[0].CatId;
+        int lCatid = SortedList[0].CatId;
+        for (int i = 0; i < SortedList.Count; i++)
+        {
+            if (fCatid == lCatid)
+            {
+                int curidx = (SortedList[i].Month) - 1;
+                amountarray[curidx] += SortedList[i].SumPerCatPerMonth;
+                label = SortedList[i].CatName;
+            }
+            else
+            {
+
+                amaountlist = amountarray.ToList();
+                await IncomeCategoriesChart.AddDataSet(GetDatasetExCat(amaountlist, label));
+
+                for (int j = 0; j <= 11; j++)
+                {
+                    amountarray[j] = 0;
+                }
+                amaountlist.Clear();
+
+                fCatid = SortedList[i].CatId;
+
+                int curidx = (SortedList[i].Month) - 1;
+                amountarray[curidx] += SortedList[i].SumPerCatPerMonth;
+                label = SortedList[i].CatName;
+            }
+
+            if (i < SortedList.Count - 1)
+                lCatid = SortedList[i + 1].CatId;
+            else
+                lCatid = SortedList[i].CatId;
+
+        }
+
+
+        bool hasrows = false;
+        for (int ff = 0; ff < amountarray.Length; ff++)
+        {
+            if (amountarray[ff] > 0)
+                hasrows = true;
+
+        }
+        if (hasrows)
+        {
+            amaountlist = amountarray.ToList();
+            await IncomeCategoriesChart.AddDataSet(GetDatasetExCat(amaountlist, label));
+        }
+
+        await IncomeCategoriesChart.Update();
+
+    }
+
+
+
+    private LineChartDataset<double> GetDataset(List<SumPerMonthDto> curlist, int indx)
+    {
+        List<double> amaountlist = new List<double>();
+        double[] amountarray = new double[12] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };  // 12 months
+        foreach (var item in curlist)
+        {
+            for (int i = 1; i <= 12; i++)
+            {
+                if (item.Month == i)
+                    amountarray[i - 1] = item.SumPerMonth;
+            }
+
+        }
+        amaountlist = amountarray.ToList();
+
+        return new LineChartDataset<double>
+            {
+                Label = LabelList[indx],
+                Data = amaountlist,
+                BackgroundColor = backgroundColors,
+                BorderColor = borderColors,
+                Fill = true,
+                PointRadius = 3,
+                BorderDash = new List<int> { },  //   {2,2,2 }
+                BorderWidth = 5
+            };
+    }
+    
+
+    private LineChartDataset<double> GetDatasetExCat(List<double> amaountlist, string lbl)
+    {
+        return new LineChartDataset<double>
+            {
+                Label = lbl,
+                Data = amaountlist,
+                BackgroundColor = backgroundColors,
+                BorderColor = borderColors,
+                Fill = true,
+                PointRadius = 3,
+                BorderDash = new List<int> { },  //   {2,2,2 }
+                BorderWidth = 5
+            };
+    }
+
+
+
+    
+    private async Task<List<int>> GetIncomeid(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT  is IsNullOrEmpty.";
+                return null;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Dashboard/GetIncomeid";
+
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }      };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                return await httpClient.GetFromJsonAsync<List<int>>(uriWithParameters);
+            }
+            else
+            {
+                var result = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                myer = result.GetErrorString();
+                return null;
+            }
+
+        }
+        catch (Exception ex) { string mes = ex.Message; return null; }
+    }
+
+
+
+    private async Task<List<int>> GetExpenseid(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT  is IsNullOrEmpty.";
+                return null;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Dashboard/GetExpenseid";
+
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }      };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                return await httpClient.GetFromJsonAsync<List<int>>(uriWithParameters);
+            }
+            else
+            {
+                var result = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                myer = result.GetErrorString();
+                return null;
+            }
+
+        }
+        catch (Exception ex) { string mes = ex.Message; return null; }
+    }
+
+
+
+
+
+    private async Task<List<string>> GetExpenseLabels(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT  is IsNullOrEmpty.";
+                return null;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Dashboard/GetExpenseLabels";
+
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }      };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                return await httpClient.GetFromJsonAsync<List<string>>(uriWithParameters);
+            }
+            else
+            {
+                var result = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                myer = result.GetErrorString();
+                return null;
+            }
+
+        }
+        catch (Exception ex) { string mes = ex.Message; return null; }
+    }
+
+
+    private async Task<List<string>> GetIncomeLabels(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT  is IsNullOrEmpty.";
+                return null;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Dashboard/GetIncomeLabels";
+
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }      };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                return await httpClient.GetFromJsonAsync<List<string>>(uriWithParameters);
+            }
+            else
+            {
+                var result = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                myer = result.GetErrorString();
+                return null;
+            }
+
+        }
+        catch (Exception ex) { string mes = ex.Message; return null; }
+    }
+
+
+
+
+    private async Task<List<SumPerMonthDto>> GetExpenseSumPerMonth(string UserId, int expenseid)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT  is IsNullOrEmpty.";
+                return null;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Dashboard/GetExpenseSumPerMonth";
+
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId } ,{"expenseid" , expenseid.ToString() }      };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                return await httpClient.GetFromJsonAsync<List<SumPerMonthDto>>(uriWithParameters);
+            }
+            else
+            {
+                var result = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                myer = result.GetErrorString();
+                return null;
+            }
+
+        }
+        catch (Exception ex) { string mes = ex.Message; return null; }
+    }
+
+
+
+
+
+
+    private async Task<List<SumPerExCat>> GetSumExPerMonthPerCat(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT  is IsNullOrEmpty.";
+                return null;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Dashboard/GetSumExPerMonthPerCat";
+
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "userId", UserId }  };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                return await httpClient.GetFromJsonAsync<List<SumPerExCat>>(uriWithParameters);
+            }
+            else
+            {
+                var result = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                myer = result.GetErrorString();
+                return null;
+            }
+
+        }
+        catch (Exception ex) { string mes = ex.Message; return null; }
+    }
+
+
+
+
+    private async Task<List<SumPerInCat>> GetSumIncPerMonthPerCat(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT  is IsNullOrEmpty.";
+                return null;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Dashboard/GetSumIncPerMonthPerCat";
+
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "userId", UserId }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                return await httpClient.GetFromJsonAsync<List<SumPerInCat>>(uriWithParameters);
+            }
+            else
+            {
+                var result = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                myer = result.GetErrorString();
+                return null;
+            }
+
+        }
+        catch (Exception ex) { string mes = ex.Message; return null; }
+    }
+
+
+
+
+
+
+
+
+
+
+    private async Task<List<SumPerMonthDto>> GetIncomeSumPerMonth(string UserId, int incomeid)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT  is IsNullOrEmpty.";
+                return null;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Dashboard/GetIncomeSumPerMonth";
+
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId } ,{"incomeid" , incomeid.ToString() }      };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                return await httpClient.GetFromJsonAsync<List<SumPerMonthDto>>(uriWithParameters);
+            }
+            else
+            {
+                var result = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                myer = result.GetErrorString();
+                return null;
+            }
+
+        }
+        catch (Exception ex) { string mes = ex.Message; return null; }
+    }
+
+
+
+
+}

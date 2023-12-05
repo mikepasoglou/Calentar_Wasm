@@ -1,0 +1,124 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+
+
+        .mikemodal
+        {
+            position:fixed,center;
+
+        }
+        .modal-header
+        {
+            background-color: antiquewhite
+        }
+        .modal-footer
+        {
+            background-color: antiquewhite
+
+        }
+        .modal-body {
+            text-align: center;
+            background-color: burlywood
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .centered-input {
+            width: 200px; 
+        }
+
+    </style>
+</head>
+
+ <body> 
+-<div class="mikemodal" style="display: @(IsVisible ? "block" : "none") ">
+    <div class="modal-dialog" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Modaltitle</h5>
+                <button type="button" class="close" @onclick="Closebyuser">
+                     <span>&times;</span> 
+                </button>
+            </div>
+            <div class="modal-body">
+                    <div class="input-container">
+                        <input @bind="InputValue" class="centered-input" />
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" @onclick="Save">Register</button>
+                <button class="btn btn-secondary" @onclick="Closebyuser">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body></html>
+
+
+
+@code {
+    public string InputValue { get; set; }
+    public string Modaltitle { get; set; }
+    public bool IsVisible { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnSettitle { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnClose { get; set; }
+
+
+
+    public async Task Show()
+    {
+        IsVisible = true;
+    }
+
+
+
+    private async Task Save()
+    {
+        await OnSave.InvokeAsync(InputValue);
+        await Close();
+    }
+
+    private async Task Closebyuser()
+    {
+        await OnClose.InvokeAsync();
+        await Close();
+    }
+
+
+
+    /*/
+    private void CloseModal()
+        {
+    Close();
+    }
+    */
+    public async Task Close()
+    {
+        IsVisible = false;
+        InputValue = string.Empty;
+    }
+
+
+    public  async Task SetTitle(string title)
+    {
+        Modaltitle = title;
+        await OnSettitle.InvokeAsync(Modaltitle);
+    }
+
+
+
+}

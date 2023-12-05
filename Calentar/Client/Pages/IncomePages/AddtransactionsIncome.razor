@@ -1,0 +1,391 @@
+﻿@page "/AddtransactionsIncome/{ParamID}"
+@inject NavigationManager NavigationManager
+@inject HttpClient httpClient
+@using Calentar.DataTables
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            width: 50%;
+            float: left;
+            margin-left: 10px;
+            display: flex;
+            justify-content: center;
+            align-content:center;
+            background-color:antiquewhite;
+        }
+
+            .card:hover {
+                box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+            }
+
+       
+
+        .flex-container {
+            display: flex;
+            justify-content: space-around;
+            background: #fff;
+        }
+      
+
+    </style>
+</head>
+
+<body>
+@if (myer != string.Empty)
+{
+    <p> @myer</p>
+}
+<div class="flex-container">
+    <div class="card" style="">
+        <h4 class="card-header">Add Transaction</h4>
+        <div class="card-body">
+<EditForm Model="@_incometran" OnSubmit="@Add_Edit_tranexpenses" class="row p-3">
+    <DataAnnotationsValidator />
+
+
+
+                <div class="col-md-12 mb-3">
+                    <label for="ID" class="form-label">POSTDATE</label>
+                    <InputNumber readonly id="ID" @bind-Value="_incometran.ID" />
+                    <ValidationMessage For="@(() => _incometran.ID)" />
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <label for="POSTDATE" class="form-label">POSTDATE</label>
+                    <InputDate id="POSTDATE" @bind-Value="_incometran.POSTDATE" />
+                    <ValidationMessage For="@(() => _incometran.POSTDATE)" />
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <InputSelect class="form-select" @bind-Value="_incometran.INCOMEID">
+                        <option value="">Select income </option>
+                        @foreach (var exp in incomelist)
+                        {
+                            <option value="@exp.Id">@exp.Descript </option>
+                        }
+                    </InputSelect>
+                </div>
+
+                <div class="col-md-10 mb-3">
+                    <label for="EXPENSEID" class="form-label">EXPENSEID</label>
+                    <InputNumber readonly id="EXPENSEID" @bind-Value="_incometran.INCOMEID" />
+                    <ValidationMessage For="@(() => _incometran.INCOMEID)" />
+                </div>
+
+
+                <div class="col-md-12 mb-3">
+                    <label for="DUEDATE" class="form-label">DUEDATE</label>
+                    <InputDate id="DUEDATE" @bind-Value="_incometran.DUEDATE" />
+                    <ValidationMessage For="@(() => _incometran.DUEDATE)" />
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <label for="REMINDER" class="form-label">REMINDER</label>
+                    <InputCheckbox id="Memo" @bind-Value="_incometran.REMINDER" />
+                    <ValidationMessage For="@(() => _incometran.REMINDER)" />
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <label for="REMINDERDATE" class="form-label">REMINDERDATE</label>
+                    <InputDate id="REMINDERDATE" @bind-Value="_incometran.REMINDERDATE" />
+                    <ValidationMessage For="@(() => _incometran.REMINDERDATE)" />
+                </div>
+
+
+                <div class="col-md-12 mb-3">
+                    <label for="AMOUNT" class="form-label">AMOUNT</label>
+                    <InputNumber id="AMOUNT" @bind-Value="_incometran.AMOUNT" />
+                    <ValidationMessage For="@(() => _incometran.AMOUNT)" />
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <label for="MEMO" class="form-label">MEMO</label>
+                    <InputText id="MEMO" @bind-Value="_incometran.MEMO" />
+                    <ValidationMessage For="@(() => _incometran.MEMO)" />
+                </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <!-- 
+    <button type="reset" class="btn dismiss">reset</button>
+                    -->
+    <div class="col-md-12 mb-3">
+        <label class="form-label">Make Appoinment On Calentar ?</label>
+        <InputCheckbox @bind-Value="makeappoinment"></InputCheckbox>
+    </div>
+</EditForm>
+</div>
+</div>
+</div>
+</body></html>
+
+
+
+
+@code {
+    [Parameter]
+    public string ParamID { get; set; }   
+    private bool newmode;
+
+
+    string myer = string.Empty;
+    private bool modalVisible = true;
+    private bool makeappoinment = true;
+
+
+    private IEnumerable<Income> incomelist = new List<Income>();  // from dropdopwn list
+
+    protected Incometran _incometran = new Incometran();
+    AppointmentVM appoinmentmodel = new AppointmentVM();
+
+
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            int ParamID_INT = Convert.ToInt32(ParamID);
+            if (ParamID_INT != 0)  // edit mode
+            {
+                newmode = false;
+                await FillInlist(ClassTEST.USERID);
+                _incometran = await GetInran(ParamID_INT);
+                //await Uptintran(_incometran, "622c95d0-6d96-4ab2-af27-c09d0b19cdcd");
+
+            }
+            else
+            {
+                newmode = true;
+                await FillInlist(ClassTEST.USERID);
+            }
+            //incomelist = await _incomeRep.FillIncomelist(GLClass.Userid);
+
+        }
+        catch (Exception ee) { myer = ee.Message; }
+    }
+
+
+
+    protected async Task Add_Edit_tranexpenses()
+    {
+        if (newmode)
+        {
+            bool res = await AddIntran(_incometran, ClassTEST.USERID);
+            if (res)
+            {
+                if (makeappoinment)
+                {
+                    appoinmentmodel = new AppointmentVM
+                        {
+                            USERID = ClassTEST.USERID,
+                            STARTDATE = _incometran.DUEDATE,
+                            ENDDATE = _incometran.DUEDATE,
+                            MESSAGE = _incometran.MEMO != string.Empty ? _incometran.MEMO : "Auto Added -Income Transaction",
+                            ALLDAY = false,
+                            COLORCAT = 0,
+                            EXTRANID = 0, // prepei  na mou to epistrepsi h Addextran DISKOLO  **********************
+                            INTRANID = 0
+                        };
+                    await Addapointment(appoinmentmodel);
+                }
+                NavigationManager.NavigateTo("/InTransactions");
+            }
+        }
+        else
+        {
+        var res= await Uptintran(_incometran, ClassTEST.USERID);
+            if(res)
+                NavigationManager.NavigateTo("/InTransactions");
+        }
+    }
+
+
+
+
+   
+
+
+    private async Task FillInlist(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Income/FillIncomelist";
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            var response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                incomelist = await httpClient.GetFromJsonAsync<IEnumerable<Income>>(uriWithParameters);
+            }
+            else
+                myer = response.StatusCode.ToString();
+
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+    private async Task<bool> AddIntran(Incometran model, string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return false;
+            }
+
+            model.USERID = UserId; // ??????????????????????????????????????
+
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Income/AddIncomeTran";
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync<Incometran>(baseUri, model);
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                myer = response.StatusCode.ToString();
+                return false;
+            }
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); return false; }
+    }
+
+
+    private async Task<bool> Uptintran(Incometran model, string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return false;
+            }
+
+            model.USERID = UserId; // ??????????????????????????????????????
+
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Income/UpdIncomeTRan";
+            HttpResponseMessage response = await httpClient.PutAsJsonAsync<Incometran>(baseUri, model);
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                myer = response.StatusCode.ToString();
+                return false;
+            }
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); return false; }
+    }
+
+
+    private async Task<Incometran> GetInran(int curid)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return null;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Income/GetIncometran";
+
+            Dictionary<string, int> queryParameters = new Dictionary<string, int>{ // pass interger parameter to webapi
+                                { "curid", curid }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value.ToString())}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+
+
+
+
+            var response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                return await httpClient.GetFromJsonAsync<Incometran>(uriWithParameters);
+            }
+            else
+            {
+                myer = response.StatusCode.ToString();
+                return null;
+            }
+
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); return null; }
+    }
+
+
+
+    private async Task Addapointment(AppointmentVM model)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Appointment/Addapointment";
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync<AppointmentVM>(baseUri, model);
+            if (response.IsSuccessStatusCode)
+            {
+                // ......
+            }
+            else
+                myer = response.StatusCode.ToString();
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+    
+
+
+
+
+
+}

@@ -1,0 +1,400 @@
+﻿@page "/Addtransactions/{ParamID}"
+@inject NavigationManager NavigationManager
+@using Calentar.DataTables
+@inject HttpClient httpClient
+@using Calentar.Client.DataModels
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            width: 50%;
+            float: left;
+            margin-left: 10px;
+            display: flex;
+            justify-content: center;
+            align-content:center;
+            background-color: antiquewhite;
+        }
+
+            .card:hover {
+                box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+            }
+
+       
+
+        .flex-container {
+            display: flex;
+            justify-content: space-around;
+            background: #fff;
+        }
+      
+
+    </style>
+</head>
+
+<body>
+
+@if (myer!=string.Empty)
+{
+    <p> @myer</p>
+}
+
+<div class="flex-container">
+    <div class="card" style="">
+        <h4 class="card-header">Add Transaction</h4>
+        <div class="card-body">
+<EditForm Model="@_expensetran" OnSubmit="@Add_Edit_tranexpenses" class="row p-3">
+    <DataAnnotationsValidator />
+
+                <div class="col-md-12 mb-3">
+                    <label for="ID" class="form-label">POSTDATE</label>
+                    <InputNumber readonly id="ID" @bind-Value="_expensetran.ID" />
+                    <ValidationMessage For="@(() => _expensetran.ID)" />
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <label for="POSTDATE" class="form-label">POSTDATE</label>
+                    <InputDate id="POSTDATE" @bind-Value="_expensetran.POSTDATE" />
+                    <ValidationMessage For="@(() => _expensetran.POSTDATE)" />
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <InputSelect class="form-select" @bind-Value="_expensetran.EXPENSEID">
+                        <option value="">Select Expense </option>
+                        @foreach (var exp in expenseslist)
+                        {
+                            <option value="@exp.Id">@exp.Descript </option>
+                        }
+                    </InputSelect>
+                </div>
+
+                <div class="col-md-10 mb-3">
+                    <label for="EXPENSEID" class="form-label">EXPENSEID</label>
+                    <InputNumber readonly id="EXPENSEID" @bind-Value="_expensetran.EXPENSEID" />
+                    <ValidationMessage For="@(() => _expensetran.EXPENSEID)" />
+                </div>
+
+
+                <div class="col-md-12 mb-3">
+                    <label for="DUEDATE" class="form-label">DUEDATE</label>
+                    <InputDate id="DUEDATE" @bind-Value="_expensetran.DUEDATE" />
+                    <ValidationMessage For="@(() => _expensetran.DUEDATE)" />
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <label for="REMINDER" class="form-label">REMINDER</label>
+                    <InputCheckbox id="Memo" @bind-Value="_expensetran.REMINDER" />
+                    <ValidationMessage For="@(() => _expensetran.REMINDER)" />
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <label for="REMINDERDATE" class="form-label">REMINDERDATE</label>
+                    <InputDate id="REMINDERDATE" @bind-Value="_expensetran.REMINDERDATE" />
+                    <ValidationMessage For="@(() => _expensetran.REMINDERDATE)" />
+                </div>
+    
+    
+                <div class="col-md-12 mb-3">
+                    <label for="AMOUNT" class="form-label">AMOUNT</label>
+                    <InputNumber id="AMOUNT" @bind-Value="_expensetran.AMOUNT" />
+                    <ValidationMessage For="@(() => _expensetran.AMOUNT)" />
+                </div>
+
+                <div class="col-md-2 mb-3">
+                    <label for="MEMO" class="form-label">MEMO</label>
+                    <InputText id="MEMO" @bind-Value="_expensetran.MEMO" />
+                    <ValidationMessage For="@(() => _expensetran.MEMO)" />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save</button>
+                <!-- 
+                <button type="reset" class="btn dismiss">reset</button>
+                    -->
+        <div class="col-md-12 mb-3">
+        <label  class="form-label">Make Appoinment On Calentar ?</label>
+        <InputCheckbox @bind-Value="makeappoinment"></InputCheckbox>
+        </div>
+    <!-- 
+    <button type="submit">Save</button>
+    <button type="reset">Reset</button>
+    -->
+</EditForm>
+</div>
+</div>
+</div>
+</body>
+</html>
+
+
+
+
+
+@code {
+    //  https://medium.com/nerd-for-tech/blazor-server-app-crud-with-entity-framework-core-in-net-5-ca20d38a3cc4
+
+
+    [Parameter]
+    public string ParamID { get; set; }   //  param for this     @page "/Edittransactions/{ParamID}"
+    private bool newmode;
+
+
+    string myer = string.Empty;
+    private bool modalVisible = true;
+    private bool makeappoinment = true;
+
+
+    private IEnumerable<Expenses> expenseslist = new List<Expenses>();  // from dropdopwn list
+    private AppointmentVM appoinmentmodel = new AppointmentVM();
+    protected Expensetran _expensetran = new Expensetran();
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            int ParamID_INT = Convert.ToInt32(ParamID);
+            if (ParamID_INT!=0)  // edit mode
+            {
+                newmode = false;
+                await FillExlist(ClassTEST.USERID);
+                _expensetran = await GetExtran(ParamID);
+            }
+            else
+            {
+                newmode = true;
+                await FillExlist(ClassTEST.USERID);
+            }
+
+        }
+        catch (Exception ee) { myer = ee.Message; }
+    }
+
+
+    private async Task FillExlist(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Expense/FillExpenseslist";
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            var response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                expenseslist = await httpClient.GetFromJsonAsync<IEnumerable<Expenses>>(uriWithParameters);
+            }
+            else
+                myer = response.StatusCode.ToString();
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+    private async Task<Expensetran> GetExtran(string curid)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return null;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Expense/GetExpensetran";
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curid", curid }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            var response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                return await httpClient.GetFromJsonAsync<Expensetran>(uriWithParameters);
+            }
+            else
+            {
+                myer = response.StatusCode.ToString();
+                return null;
+            }
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); return null; }
+    }
+
+
+
+    protected async Task Add_Edit_tranexpenses()
+    {
+        if (newmode) //  appoinment  prepei na ginei kai sto edit kai sto delete 
+        {
+            Expensetran _extran   = await Addextran(_expensetran, ClassTEST.USERID);
+
+            if (_extran!=null)
+            {   if (makeappoinment)
+                {
+                    appoinmentmodel = new AppointmentVM
+                        {
+                            USERID = _extran.USERID,
+                            STARTDATE = _extran.DUEDATE,
+                            ENDDATE = _extran.DUEDATE,
+                            MESSAGE = _extran.MEMO != string.Empty ? _extran.MEMO : "Auto Added -Expense Transaction",
+                            ALLDAY=false,
+                            COLORCAT=0,
+                            EXTRANID = _extran.ID,
+                            INTRANID=0
+                        };
+                    await Addapointment(appoinmentmodel);
+                 }
+                NavigationManager.NavigateTo("/ExTransactions");
+            }
+        }
+        else
+        {
+            bool res = await Uptextran(_expensetran, ClassTEST.USERID);
+            if (res)
+                NavigationManager.NavigateTo("/ExTransactions");
+
+        }
+    }
+
+
+
+    private async Task<Expensetran> Addextran(Expensetran model, string UserId) // actionresult ??
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return null;
+            }
+
+            model.USERID = UserId; // ??????????????????????????????????????
+
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Expense/AddExTran";
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync<Expensetran>(baseUri, model);
+            if (response.IsSuccessStatusCode)
+            {
+                Expensetran res = await response.Content.ReadFromJsonAsync<Expensetran>();
+                return res;
+            }
+            else
+            {
+                ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                myer = resultclass.GetErrorString();
+                return null;
+            }
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); return null; }
+    }
+
+
+    private async Task<bool> Uptextran(Expensetran model, string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return false;
+            }
+
+            model.USERID = UserId; // ??????????????????????????????????????
+
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Expense/UptExpensTran";
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync<Expensetran>(baseUri, model);
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            else
+            {
+                myer = response.StatusCode.ToString();
+                return false;
+            }
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); return false; }
+    }
+
+
+
+    private async Task Addapointment(AppointmentVM model)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            //model.USERID = UserId; // ??????????????????????????????????????
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Appointment/Addappoinment";
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync<AppointmentVM>(baseUri, model);
+            if (response.IsSuccessStatusCode)
+            {
+                // ......
+            }
+            else
+            {
+                string myer1 = response.StatusCode.ToString();
+                string myer2 = response.Content.ToString();
+                ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                myer = resultclass.GetErrorString();
+            }
+
+
+        }
+        catch (Exception ex) { myer = ex.Message; Console.WriteLine(myer); }
+    }
+
+
+
+    /*
+    private void OnExpenseSelect(ChangeEventArgs e)
+    {
+        int  sss = Convert.ToInt32(e.Value);
+
+        string asasas = e.Value.ToString();
+        // You can perform any additional logic here based on the selected category ID.
+    }
+    */
+}

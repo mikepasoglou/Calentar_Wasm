@@ -1,0 +1,891 @@
+﻿@page "/ShowChart"
+@using System.Globalization
+@using Calentar.Client.DataModels;
+@using Calentar.DataTables
+
+@using System.Diagnostics;
+@using Newtonsoft.Json;
+@inject HttpClient httpClient
+@inject ICacheInMemService  mycache
+
+
+<html> 
+<head>
+     <link rel="stylesheet" href="/css/Dashboard.css" />  
+
+</head>
+
+<body>
+    @if ((ClassTEST.USERID == string.Empty) || (ClassTEST.responseToken == string.Empty))
+    {
+        <RadzenAlert AlertStyle="AlertStyle.Warning" Variant="Variant.Flat" Shade="Shade.Lighter">Please Login First </RadzenAlert>
+    }
+    
+
+    <div class="row">
+        <div class="column" style="background-color:#aaa;">
+            <div class="card">
+                <h3 class="card-header">Expense Chart</h3>
+                <div class="card-body">
+                    <div class="col-md-12 mb-3">
+                        <InputSelect @bind-Value="selectedExpenseId" @onclick="@RefreshExGraph">
+                            select expense
+                            @foreach (var category in expenseslist)
+                            {
+                                <option value="@category.Id">@category.Descript </option>
+                            }
+                        </InputSelect>
+                    </div>
+
+                    <div>
+                        <RadzenCard class="w-100 mb-4" Style="display: flex; align-items: center; gap: 0.5rem">
+                            <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
+                            <RadzenLabel Text="Smooth" For="smooth" Style="margin-right: 1rem;" />
+                            <RadzenCheckBox @bind-Value="@showDataLabels" Name="dataLabels"></RadzenCheckBox>
+                            <RadzenLabel Text="Show Data Labels" For="dataLabels" />
+                        </RadzenCard>
+                        <RadzenChart Style="background-color:antiquewhite; border:double;">
+                            <RadzenLineSeries Smooth="@smooth" Data="@ExpensesListForGraph" CategoryProperty="Month" Title="@ExpenseName"
+                                              LineType="LineType.Solid" ValueProperty="SumPerMonth">
+                                <RadzenMarkers MarkerType="MarkerType.Square" />
+                                <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                            </RadzenLineSeries>
+                            <RadzenCategoryAxis Padding="0" />
+                            <RadzenValueAxis Formatter="@FormatAsUSD">
+                                <RadzenGridLines Visible="true" />
+                                <RadzenAxisTitle Text="Amount in Euro" />
+                            </RadzenValueAxis>
+                        </RadzenChart>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="column" style="background-color:#bbb;">
+            <div class="card">
+                <h3 class="card-header">Expense Category Chart</h3>
+                <div class="card-body">
+                    <div class="col-md-12 mb-3">
+                        <InputSelect @bind-Value="selectedExpenseCatId" @onclick="@RefreshExCatGraph">
+                            select expense
+                            @foreach (var category in expensesCatlist)
+                            {
+                                <option value="@category.Id">@category.Descript </option>
+                            }
+                        </InputSelect>
+                    </div>
+
+                    <div>
+                        <RadzenCard class="w-100 mb-4" Style="display: flex; align-items: center; gap: 0.5rem">
+                            <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
+                            <RadzenLabel Text="Smooth" For="smooth" Style="margin-right: 1rem;" />
+                            <RadzenCheckBox @bind-Value="@showDataLabels" Name="dataLabels"></RadzenCheckBox>
+                            <RadzenLabel Text="Show Data Labels" For="dataLabels" />
+                        </RadzenCard>
+
+                        <RadzenChart Style="background-color:antiquewhite; border:double;">
+                            <RadzenLineSeries Smooth="@smooth" Data="@ExpensesCatListForGraph" CategoryProperty="Month" Title="@ExpenseCatName"
+                                              LineType="LineType.Solid" ValueProperty="SumPerMonth">
+                                <RadzenMarkers MarkerType="MarkerType.Square" />
+                                <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                            </RadzenLineSeries>
+
+                            <RadzenCategoryAxis Padding="0" />
+                            <RadzenValueAxis Formatter="@FormatAsUSD">
+                                <RadzenGridLines Visible="true" />
+                                <RadzenAxisTitle Text="Amount in Euro" />
+                            </RadzenValueAxis>
+
+                        </RadzenChart>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="column" style="background-color:#ccc;">
+            <div class="card">
+                <h3 class="card-header">Income Chart</h3>
+                <div class="card-body">
+                    <div class="col-md-12 mb-3">
+                        <InputSelect @bind-Value="selectedIncomeId" @onclick="@RefreshInGraph">
+                            Select income
+                            @foreach (var item in incomeslist)
+                            {
+                                <option value="@item.Id">@item.Descript </option>
+                            }
+                        </InputSelect>
+                    </div>
+
+                    <div>
+                        <RadzenCard class="w-100 mb-4" Style="display: flex; align-items: center; gap: 0.5rem">
+                            <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
+                            <RadzenLabel Text="Smooth" For="smooth" Style="margin-right: 1rem;" />
+                            <RadzenCheckBox @bind-Value="@showDataLabels" Name="dataLabels"></RadzenCheckBox>
+                            <RadzenLabel Text="Show Data Labels" For="dataLabels" />
+                        </RadzenCard>
+
+                        <RadzenChart Style="background-color:antiquewhite; border:double;">
+                            <RadzenLineSeries Smooth="@smooth" Data="@IncomeListForGraph" CategoryProperty="Month" Title="@IncomeName"
+                                              LineType="LineType.Solid" ValueProperty="SumPerMonth">
+                                <RadzenMarkers MarkerType="MarkerType.Square" />
+                                <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                            </RadzenLineSeries>
+
+                            <RadzenCategoryAxis Padding="0" />
+                            <RadzenValueAxis Formatter="@FormatAsUSD">
+                                <RadzenGridLines Visible="true" />
+                                <RadzenAxisTitle Text="Amount in Euro" />
+                            </RadzenValueAxis>
+                        </RadzenChart>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="column" style="background-color:#ddd;">
+            <div class="card">
+                <h3 class="card-header">Income Category Chart</h3>
+                <div class="card-body">
+                    <div class="col-md-12 mb-3">
+                        <InputSelect @bind-Value="selectedIncomeCatId" @onclick="@RefreshInCatGraph">
+                            Select income Category
+                            @foreach (var item in incomeCatlist)
+                            {
+                                <option value="@item.Id">@item.Descript </option>
+                            }
+                        </InputSelect>
+                    </div>
+
+                    <div>
+                        <RadzenCard class="w-100 mb-4" Style="display: flex; align-items: center; gap: 0.5rem">
+                            <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
+                            <RadzenLabel Text="Smooth" For="smooth" Style="margin-right: 1rem;" />
+                            <RadzenCheckBox @bind-Value="@showDataLabels" Name="dataLabels"></RadzenCheckBox>
+                            <RadzenLabel Text="Show Data Labels" For="dataLabels" />
+                        </RadzenCard>
+
+                        <RadzenChart Style="background-color:antiquewhite; border:double;">
+                            <RadzenLineSeries Smooth="@smooth" Data="@IncomeCatListForGraph" CategoryProperty="Month" Title="@IncomeCatName"
+                                              LineType="LineType.Solid" ValueProperty="SumPerMonth">
+                                <RadzenMarkers MarkerType="MarkerType.Square" />
+                                <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                            </RadzenLineSeries>
+
+                            <RadzenCategoryAxis Padding="0" />
+                            <RadzenValueAxis Formatter="@FormatAsUSD">
+                                <RadzenGridLines Visible="true" />
+                                <RadzenAxisTitle Text="Amount in Euro" />
+                            </RadzenValueAxis>
+                        </RadzenChart>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--    <MikeComponent> </MikeComponent>     -->
+
+</body> </html>
+
+@code {
+
+
+
+    public class SumPerMonthDtoView
+    {
+        public double SumPerMonth { get; set; }
+        public int Year { get; set; }
+        public string Month { get; set; }
+        public string Descipt { get; set; }
+
+        private string GetDebuggerDisplay()
+        {
+            return ToString();
+        }
+    }
+
+
+
+
+    private int selectedExpenseId=1;
+    private int selectedExpenseCatId = 1;
+    private int selectedIncomeId = 1;
+    private int selectedIncomeCatId = 1;
+
+
+    bool showDataLabels = true;
+    bool smooth = false;
+    string myer;
+
+    string ExpenseName; // for chart seriies
+    string ExpenseCatName; // for chart seriies
+    string IncomeName;
+    string IncomeCatName;
+
+    private Expenses expenses;
+
+
+
+    //private List<int> IdList;
+    private List<SumPerMonthDtoView>? ExpensesListForGraph { get; set; } = new List<SumPerMonthDtoView>();
+    private List<SumPerMonthDtoView>? ExpensesCatListForGraph { get; set; } = new List<SumPerMonthDtoView>();
+
+
+    private List<SumPerMonthDtoView>? IncomeListForGraph { get; set; } = new List<SumPerMonthDtoView>();
+    private List<SumPerMonthDtoView>? IncomeCatListForGraph { get; set; } = new List<SumPerMonthDtoView>();
+
+
+    private IEnumerable<Expenses> expenseslist = new List<Expenses>();  // from dropdopwn list
+    private IEnumerable<Excategory> expensesCatlist = new List<Excategory>();  // from dropdopwn list
+    private IEnumerable<Income> incomeslist = new List<Income>();  // from dropdopwn list
+    private IEnumerable<Incategory> incomeCatlist = new List<Incategory>();  // from dropdopwn list
+
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await FillDropdownListExpenses(ClassTEST.USERID);
+            await FillDropdownListIncomes(ClassTEST.USERID);
+            await FillDropdownListExpensesCat(ClassTEST.USERID);
+            await FillDropdownListIncomeCat(ClassTEST.USERID);
+
+            await FillChartExpense(ClassTEST.USERID, 1); //  show the first record   
+            await FillChartExpenseCat(ClassTEST.USERID, 1);
+            await FillChartIncome(ClassTEST.USERID, 1); //  show the first record
+            await FillChartIncomeCat(ClassTEST.USERID, 1);
+
+            StateHasChanged();
+        }
+    }
+
+
+    protected override async void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+
+
+    private async Task RefreshExGraph()
+    {
+        int curexId = selectedExpenseId;
+        await FillChartExpense(ClassTEST.USERID, curexId); // cur USer ID
+    }
+
+
+
+    private async Task RefreshExCatGraph()
+    {
+        int curCat = selectedExpenseCatId;
+        await FillChartExpenseCat(ClassTEST.USERID, curCat); 
+    }
+
+
+
+
+
+    private async Task RefreshInGraph()
+    {
+        int curexId = selectedIncomeId;
+        await FillChartIncome(ClassTEST.USERID, curexId); // cur USer ID
+    }
+
+    private async Task RefreshInCatGraph()
+    {
+        int curexcatId = selectedIncomeCatId;
+        await FillChartIncomeCat(ClassTEST.USERID, curexcatId); 
+    }
+
+
+
+
+    private async Task FillChartExpense(string UserId,int curexid)
+    {
+
+        if (string.IsNullOrEmpty(ClassTEST.responseToken))
+        {
+            myer = "JWT  is IsNullOrEmpty.";
+            return;
+        }
+
+        if (curexid <= 0) 
+            return;
+
+        string cacheKey = $"FillChartExpense_{UserId}_{curexid}";
+        ClassTEST.FillChartExpense_cachedData = mycache.GetCachedData(cacheKey);
+
+
+        if (!string.IsNullOrEmpty(ClassTEST.FillChartExpense_cachedData))
+        {
+            ExpensesListForGraph = JsonConvert.DeserializeObject<List<SumPerMonthDtoView>>(ClassTEST.FillChartExpense_cachedData);
+            ExpenseName = GetSeriesName(ExpensesListForGraph);
+        }
+        else
+        {
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+            /* gia na trexei https    PREPEI  na zhthseis apo to smarterasp  na kanei install sto siote SSL protoko  */
+
+            //string uri = "https://mikepas-001-site6.htempurl.com/api/Expense/GetVmExpensesTran?curUserid=1";    
+
+
+            /*
+            string uri = "https://mikepas-001-site2.htempurl.com/api/Dashboard/GetExpenseid?curUserid=622c95d0-6d96-4ab2-af27-c09d0b19cdcd";    //  OK
+            var response = await httpClient.GetAsync(uri);
+            if (response.IsSuccessStatusCode)
+                IdList = await httpClient.GetFromJsonAsync<List<int>>(uri);
+                else
+                myer = response.StatusCode.ToString();
+                */
+
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Dashboard/FillExpenseGraphSumByMonth";    //  OK
+
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId },  { "expenseid", curexid.ToString()}    };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            // Creating the request message
+            //HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, uriWithParameters); // new 
+            // Set the mode to 'no-cors'
+            // request.SetBrowserRequestMode(BrowserRequestMode.NoCors);
+
+
+            HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                ExpensesListForGraph = await httpClient.GetFromJsonAsync<List<SumPerMonthDtoView>>(uriWithParameters);
+
+                if (ExpensesListForGraph.Count > 0)
+                {
+                    mycache.SetCacheData(cacheKey, JsonConvert.SerializeObject(ExpensesListForGraph), TimeSpan.FromMinutes(20));
+                    ExpenseName = GetSeriesName(ExpensesListForGraph);
+                    /*
+                    @foreach (var item in ExpensesListForGraph)
+                    {
+                        if (item.Descipt != string.Empty)
+                        {
+                            ExpenseName = item.Descipt;
+                            break;
+                        }
+                    }
+                    */
+                }
+                else
+                {
+                    //   alert no transac fot this item
+                }
+
+            }
+            else
+                myer = response.StatusCode.ToString();
+        }
+
+                /*
+                *
+                    *
+                    * private async Task FillChartExpense(string UserId, int curexid)
+            {
+                if (string.IsNullOrEmpty(ClassTEST.responseToken))
+        {
+        // You can redirect to the login page or display an error message.
+        myer = "JWT token is IsNullOrEmpty.";
+        return;
+        }
+
+        if (curexid <= 0)
+        return;
+
+        string cachedData = mycache.GetCachedData("cachedData");
+
+    if (string.IsNullOrEmpty(cachedData))
+    {
+    // Data is not cached, fetch it from the server
+    // ... (your existing API call logic)
+
+    // Cache the fetched data
+    if (ExpensesListForGraph != null && ExpensesListForGraph.Count > 0)
+     {
+     mycache.CacheData("cachedData", JsonConvert.SerializeObject(ExpensesListForGraph), TimeSpan.FromMinutes(5));
+     }
+     }
+     else
+     {
+     // Data is present in the cache, use it
+     ExpensesListForGraph = JsonConvert.DeserializeObject<List<SumPerMonthDtoView>>(cachedData);
+    // ... (your processing logic)
+    }
+    *
+    *
+    *
+    *
+    *
+    *
+    *
+    *
+    *
+    *
+    *
+    *
+    *
+    *
+    *
+    *
+    foreach (var item in IdList)
+    {
+                        Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                        { "curUserid", UserId },  { "expenseid", item.ToString()}    };
+    string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+    string uriWithParameters = $"{baseUri}?{queryString}";
+    response = await httpClient.GetAsync(uriWithParameters);
+        if (response.IsSuccessStatusCode)
+        {
+        //FinalChartlist1.Clear();
+        FinalChartlist1 = await httpClient.GetFromJsonAsync<List<SumPerMonthDtoView>>(uriWithParameters);
+        break;
+        }
+        else
+        myer = response.StatusCode.ToString();
+            }
+        */
+        //StateHasChanged();
+
+    }
+
+    
+    private string GetSeriesName(List<SumPerMonthDtoView> mylist)
+    {
+        @foreach (var item in mylist)
+        {
+            if (item.Descipt != string.Empty)
+            {
+                return item.Descipt;
+                
+            }
+        }
+        return string.Empty;
+    }
+
+
+
+    private async Task<bool> FillChartExpenseCat(string UserId, int curCat)
+    {
+
+        if (string.IsNullOrEmpty(ClassTEST.responseToken))
+        {
+            myer = "JWT  is IsNullOrEmpty.";
+            return false;
+        }
+
+        if (curCat <= 0)
+            return false;
+
+
+        string cacheKey = $"FillChartExpenseCat_{UserId}_{curCat}";
+        ClassTEST.FillChartExpenseCat_cachedData = mycache.GetCachedData(cacheKey);
+
+        if (!string.IsNullOrEmpty(ClassTEST.FillChartExpenseCat_cachedData))
+        {
+            ExpensesCatListForGraph = JsonConvert.DeserializeObject<List<SumPerMonthDtoView>>(ClassTEST.FillChartExpenseCat_cachedData);
+            ExpenseCatName = GetSeriesName(ExpensesCatListForGraph);
+            return true;
+        }
+        else
+        {
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Dashboard/FillExpenseCatGraphSumByMonth";
+
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId },  { "curExCatId", curCat.ToString()}    };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+            HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+
+            // IS OK Check // var responsenew = await httpClient.GetFromJsonAsync<List<SumPerMonthDtoView>>(uriWithParameters);
+
+            if (response.IsSuccessStatusCode)
+            {
+                ExpensesCatListForGraph = await httpClient.GetFromJsonAsync<List<SumPerMonthDtoView>>(uriWithParameters);
+                if (ExpensesCatListForGraph.Count > 0)
+                {
+                    mycache.SetCacheData(cacheKey, JsonConvert.SerializeObject(ExpensesCatListForGraph), TimeSpan.FromMinutes(20));
+                    ExpenseCatName = GetSeriesName(ExpensesCatListForGraph);
+                    /*
+                    @foreach (var item in ExpensesCatListForGraph)
+                        {
+                        if (item.Descipt != string.Empty)
+                            {
+                            ExpenseCatName = item.Descipt;
+                    break;
+                    }
+                    }*/
+                    return true;
+                }
+                else
+                {
+                    return true;
+                }
+
+            }
+            else
+            {
+                ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                myer = resultclass.GetErrorString();
+                return false;
+            }
+        }
+
+        //  StateHasChanged();
+
+    }
+
+
+
+
+    private async Task FillChartIncome(string UserId, int curexid)
+    {
+
+        if (string.IsNullOrEmpty(ClassTEST.responseToken))
+        {
+            // You can redirect to the login page or display an error message.
+            myer = "JWT token is IsNullOrEmpty.";
+            return;
+        }
+
+        if (curexid <= 0)
+            return;
+
+        string cacheKey = $"FillChartIncome_{UserId}_{curexid}";
+        ClassTEST.FillChartIncome_cachedData = mycache.GetCachedData(cacheKey);
+
+        if (!string.IsNullOrEmpty(ClassTEST.FillChartIncome_cachedData))
+        {
+            IncomeListForGraph = JsonConvert.DeserializeObject<List<SumPerMonthDtoView>>(ClassTEST.FillChartIncome_cachedData);
+            IncomeName = GetSeriesName(IncomeListForGraph);
+        }
+        else
+        {
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Dashboard/FillIncomeGraphSumByMonth";
+
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId },  { "expenseid", curexid.ToString()}    };
+
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+            HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                IncomeListForGraph = await httpClient.GetFromJsonAsync<List<SumPerMonthDtoView>>(uriWithParameters);
+                if (IncomeListForGraph.Count > 0)
+                {
+                    mycache.SetCacheData(cacheKey, JsonConvert.SerializeObject(IncomeListForGraph), TimeSpan.FromMinutes(20));
+                    IncomeName = GetSeriesName(IncomeListForGraph);
+                }
+                else
+                {
+                    //   alert no transac fot this item 
+
+                }
+            }
+            else
+            {
+                ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                myer = resultclass.GetErrorString();
+            }
+        }
+
+    }
+
+
+    private async Task FillChartIncomeCat(string UserId, int curincat)
+    {
+
+        if (string.IsNullOrEmpty(ClassTEST.responseToken))
+        {
+            myer = "JWT token is IsNullOrEmpty.";
+            return;
+        }
+
+        if (curincat <= 0) throw new Exception("Null params");
+
+        string cacheKey = $"FillChartIncomeCat_{UserId}_{curincat}";
+        ClassTEST.FillChartIncomeCat_cachedData = mycache.GetCachedData(cacheKey);
+
+        if (!string.IsNullOrEmpty(ClassTEST.FillChartIncomeCat_cachedData))
+        {
+            IncomeCatListForGraph = JsonConvert.DeserializeObject<List<SumPerMonthDtoView>>(ClassTEST.FillChartIncomeCat_cachedData);
+            IncomeCatName = GetSeriesName(IncomeCatListForGraph);
+        }
+        else
+        {
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Dashboard/FillIncomeCatGraphSumByMonth";
+
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId },  { "curInCatId", curincat.ToString()}    };
+
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+            HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                IncomeCatListForGraph = await httpClient.GetFromJsonAsync<List<SumPerMonthDtoView>>(uriWithParameters);
+                if (IncomeCatListForGraph.Count > 0)
+                {
+                    mycache.SetCacheData(cacheKey, JsonConvert.SerializeObject(IncomeCatListForGraph), TimeSpan.FromMinutes(20));
+                    IncomeCatName = GetSeriesName(IncomeCatListForGraph);
+                }
+                else
+                {
+                    //   alert no transac fot this item
+
+                }
+            }
+            else
+            {
+                ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                myer = resultclass.GetErrorString();
+
+            }
+        }
+
+    }
+
+
+
+
+
+    private async Task FillDropdownListExpenses(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            string cacheKey = $"FillDropdownListExpenses_{UserId}";
+            ClassTEST.Chart_FillDropdownListExpenses_cachedData = mycache.GetCachedData(cacheKey);
+
+            if (!string.IsNullOrEmpty(ClassTEST.Chart_FillDropdownListExpenses_cachedData))
+            {
+                expenseslist = JsonConvert.DeserializeObject<List<Expenses>>(ClassTEST.Chart_FillDropdownListExpenses_cachedData);
+            }
+            else
+            {
+                httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+                string baseUri = "https://mikepas-001-site2.htempurl.com/api/Expense/FillExpenseslist";
+                Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+                string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+                string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+                var response = await httpClient.GetAsync(uriWithParameters);
+                if (response.IsSuccessStatusCode)
+                {
+                    expenseslist = await httpClient.GetFromJsonAsync<IEnumerable<Expenses>>(uriWithParameters);
+                    if (expenseslist.Count() >0)
+                        mycache.SetCacheData(cacheKey, JsonConvert.SerializeObject(expenseslist), TimeSpan.FromMinutes(20));
+                }
+                else
+                {
+                    ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                    myer = resultclass.GetErrorString();
+                }
+            }
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+
+    private async Task FillDropdownListExpensesCat(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            string cacheKey = $"FillDropdownListExpensesCat_{UserId}";
+            ClassTEST.Chart_FillDropdownListExpensesCat_cachedData = mycache.GetCachedData(cacheKey);
+
+            if (!string.IsNullOrEmpty(ClassTEST.Chart_FillDropdownListExpensesCat_cachedData))
+            {
+                expensesCatlist = JsonConvert.DeserializeObject<List<Excategory>>(ClassTEST.Chart_FillDropdownListExpensesCat_cachedData);
+            }
+            else
+            {
+                httpClient.DefaultRequestHeaders.Clear();
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+                string baseUri = "https://mikepas-001-site2.htempurl.com/api/Expense/GetAllExpCategories";
+                Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+                string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+                string uriWithParameters = $"{baseUri}?{queryString}";
+
+                var response = await httpClient.GetAsync(uriWithParameters);
+                if (response.IsSuccessStatusCode)
+                {
+                    expensesCatlist = await httpClient.GetFromJsonAsync<IEnumerable<Excategory>>(uriWithParameters);
+                    if (expensesCatlist.Count()>0)
+                        mycache.SetCacheData(cacheKey, JsonConvert.SerializeObject(expensesCatlist), TimeSpan.FromMinutes(20));
+                }
+                else
+                {
+                    ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                    myer = resultclass.GetErrorString();
+                }
+            }
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+
+    private async Task FillDropdownListIncomes(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+
+            string cacheKey = $"FillDropdownListIncomes_{UserId}";
+            ClassTEST.Chart_FillDropdownListIncomes_cachedData = mycache.GetCachedData(cacheKey);
+
+            if (!string.IsNullOrEmpty(ClassTEST.Chart_FillDropdownListIncomes_cachedData))
+            {
+                incomeslist = JsonConvert.DeserializeObject<List<Income>>(ClassTEST.Chart_FillDropdownListIncomes_cachedData);
+            }
+            else
+            {
+                httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+                string baseUri = "https://mikepas-001-site2.htempurl.com/api/Income/FillIncomelist";
+                Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+                string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+                string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+                var response = await httpClient.GetAsync(uriWithParameters);
+                if (response.IsSuccessStatusCode)
+                {
+                    incomeslist = await httpClient.GetFromJsonAsync<IEnumerable<Income>>(uriWithParameters);
+                    if (incomeslist.Count() > 0)
+                        mycache.SetCacheData(cacheKey, JsonConvert.SerializeObject(incomeslist), TimeSpan.FromMinutes(20));
+                }
+                else
+                {
+                    ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                    myer = resultclass.GetErrorString();
+                }
+            }
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+    private async Task FillDropdownListIncomeCat(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT  is IsNullOrEmpty.";
+                return;
+            }
+
+            string cacheKey = $"FillDropdownListIncomeCat_{UserId}";
+            ClassTEST.Chart_FillDropdownListIncomeCat_cachedData = mycache.GetCachedData(cacheKey);
+
+            if (!string.IsNullOrEmpty(ClassTEST.Chart_FillDropdownListIncomeCat_cachedData))
+            {
+                incomeCatlist = JsonConvert.DeserializeObject<List<Incategory>>(ClassTEST.Chart_FillDropdownListIncomeCat_cachedData);
+            }
+            else
+            {
+                httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+                string baseUri = "https://mikepas-001-site2.htempurl.com/api/Income/GetAllIncCategories";
+                Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curUserid", UserId }     };
+                string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+                string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+                var response = await httpClient.GetAsync(uriWithParameters);
+                if (response.IsSuccessStatusCode)
+                {
+                    incomeCatlist = await httpClient.GetFromJsonAsync<IEnumerable<Incategory>>(uriWithParameters);
+                    if (incomeCatlist.Count() > 0)
+                        mycache.SetCacheData(cacheKey, JsonConvert.SerializeObject(incomeCatlist), TimeSpan.FromMinutes(20));
+                }
+                else
+                {
+                    ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                    myer = resultclass.GetErrorString();
+                }
+            }
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+
+
+    string FormatAsUSD(object value)
+    {
+        // return ((double)value).ToString("C0", CultureInfo.CreateSpecificCulture("en-US"));
+        return value + "€";
+    }
+
+    string FormatAsMonth(object value)
+    {
+        if (value != null)
+        {
+            return Convert.ToDateTime(value).ToString("MMM");
+        }
+
+        return string.Empty;
+    }
+
+    
+   
+        
+    
+
+
+
+
+
+
+}

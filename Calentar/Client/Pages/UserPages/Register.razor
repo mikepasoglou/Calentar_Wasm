@@ -1,0 +1,391 @@
+﻿@page "/Register"
+@using System.Net.Http;
+@using System.Net.Http.Json;
+@using System.Threading.Tasks;
+@using Microsoft.AspNetCore.Components.Authorization;
+@using Calentar.DataTables
+@using System.Timers;
+@using Calentar.Client.DataModels
+@inject NavigationManager NavigationManager
+@inject HttpClient httpClient
+@inject IJSRuntime Js;
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            background-color: antiquewhite;
+        }
+
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            width: 50%;
+            float: left;
+            margin-left: 10px;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            background-color: antiquewhite;
+        }
+
+            .card:hover {
+                box-shadow: 0 8px 36px 0 rgba(0, 0, 0, 0.5);
+            }
+
+
+
+        .flex-container {
+            display: flex;
+            justify-content: space-around;
+            background: #fff;
+            background-color: antiquewhite;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    @if (myer != string.Empty)
+    {
+        ShowAlert(myer);
+
+    }
+
+    <div>
+        <MikeModal @ref="modalRef" OnSave="ModalVerifyCode" OnClose="CloseModal1">   </MikeModal>
+    </div>
+
+
+    <div class="flex-container">
+        <div class="card">
+            <h4 class="card-header">Registration</h4>
+            <div class="card-body">
+                <EditForm Model="@_regmodel" OnValidSubmit="StartSession">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label>Username</label>
+                        <InputText @bind-Value="_regmodel.Username" class="form-control" />
+                        <ValidationMessage For="@(() => _regmodel.Username)" />
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <InputText @bind-Value="_regmodel.Password" type="password" class="form-control" />
+                        <ValidationMessage For="@(() => _regmodel.Password)" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Retype Password</label>
+                        <InputText @bind-Value="retypedpassword" type="password" class="form-control" />
+                        <ValidationMessage For="@(() => _regmodel.Password)" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>email</label>
+                        <InputText @bind-Value="_regmodel.Email" type="email" class="form-control" />
+                        <ValidationMessage For="@(() => _regmodel.Email)" />
+                    </div>
+
+                    <button disabled="@loading" class="btn btn-primary">
+                            @if (loading)
+                            {
+                                <span class="spinner-border spinner-border-sm mr-1"></span>
+                            }
+                            Verify and Register
+                    </button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+
+    <!-- 
+    <div>
+        <label for="MEMO">CODE  </label>
+        <input type="text" @bind="UserVeryficationCode" @onkeydown="VerifyCode" />
+
+    </div>
+    -->
+</body>
+</html>
+
+
+@code {
+
+    MikeModal modalRef;
+
+    private string retypedpassword = string.Empty;
+    private string myer = string.Empty;
+    private bool loading;
+    private RegistrationModel _regmodel = new RegistrationModel();
+
+    protected string startsessionid = string.Empty;
+    protected string usersessionid = string.Empty;
+
+    private const string sessionKey = "SessionId";
+    private Timer timer = default!;
+
+    protected string VeryficationCode = string.Empty;
+    private string UserVeryficationCode = string.Empty;
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+
+    private async Task StartSession()
+    {
+
+        if (retypedpassword!=_regmodel.Password)
+        {
+            myer = "Please retype your password";
+            return;
+        }
+
+        await SetModaltitle("You will recieve a Verifycation code to your email " + Environment.NewLine+ " Enter Verifycation Code");
+        await ShowModal();
+        loading = true;
+        startsessionid = new Guid().ToString();
+        await SetSessionData(startsessionid);
+        timer = new Timer();
+        timer.Interval = 180000;
+        timer.Elapsed += Ontimer;
+        timer.Start();
+
+        Random myr = new Random();
+        int r = myr.Next(1001, 99999);
+        VeryficationCode = r.ToString();
+        string m = "Your code is " + VeryficationCode;
+        await Sendmail(m);
+
+    }
+
+
+    private async Task ResetSession(bool mes)
+    {
+        await DeleteSessionData();
+        VeryficationCode = string.Empty;
+        UserVeryficationCode = string.Empty;
+        ResetTimer(mes);
+        loading = false;
+
+    }
+
+
+
+
+
+
+
+    private async Task RegisterUser()
+    {
+        bool res=  await RegisterToServer();
+        if (res)
+        {
+            string m = "Thank you " + _regmodel.Username + " for you Registration";
+            await Sendmail(m);
+
+            var n = _regmodel.Username;
+            var p = _regmodel.Password; //   better no parameter
+            NavigationManager.NavigateTo("/Login/" + n + "/" + p);
+        }
+        else
+            myer = "Registration Failed";
+    }
+
+
+
+
+    private  async void Ontimer(Object? source, ElapsedEventArgs e)
+    {
+        await   ResetSession(true);
+        await modalRef.Close();
+    }
+
+
+    private async void ResetTimer(bool mes)
+    {
+        try
+        {
+            timer.Stop();
+            timer.Elapsed -= Ontimer;
+            timer.Dispose();
+        }
+        catch { }
+        if (mes)
+        {
+            string alertmes = "Session has Expired. Please Resend";
+            await  ShowAlert(alertmes);
+        }
+    }
+
+
+
+    private async Task<bool> RegisterToServer()
+    {
+        try
+        {
+            loading = true;
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Authentication/registeration";
+
+            _regmodel.FirstName = "testUser";  // this 2 fields are montratory for the api call . I add them manually 
+            _regmodel.LastName = "testUser";
+
+            httpClient.DefaultRequestHeaders.Clear();
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync(baseUri, _regmodel);
+            if (response.IsSuccessStatusCode)
+            {
+                loading = false;
+                return true;
+            }
+            else
+            {
+                loading = false;
+                ErrorResponse resultclass = await ErrorResponse.FromHttpResponseAsync(response);
+                myer = resultclass.GetErrorString();
+                return false;
+            }
+        }
+        catch (Exception ex) { myer = ex.Message;  return false; }
+    }
+
+
+
+
+
+    private async Task ModalVerifyCode(string value)
+    {
+        UserVeryficationCode = value;
+        await modalRef.Close();
+        usersessionid = await GetSessionData();
+        if (usersessionid == startsessionid)
+        {
+            if (VeryficationCode == UserVeryficationCode)
+            {
+                await ResetSession(false);
+                await RegisterUser();
+            }
+            else
+            {
+                await ResetSession(false);
+                await ShowAlert("Wrong code !");
+            }
+        }
+        else
+        {
+            await ResetSession(false);
+            await ShowAlert("Session problem ");
+        }
+    }
+
+
+
+
+    async Task SetModaltitle(string value)
+    {
+        await modalRef.SetTitle(value); 
+
+    }
+
+    async Task ShowModal()
+    {
+        await modalRef.Show();
+    }
+
+    
+    async  Task CloseModal1()
+    {
+        await ResetSession(false);
+    }
+    
+
+
+    private async Task SetSessionData(string sId)
+    {
+
+        await Js.InvokeVoidAsync("sessionStorage.setItem", sessionKey, sId);
+    }
+
+    private async Task<string> GetSessionData()
+    {
+        string sessionKey = "SessionId";
+        var data = await Js.InvokeAsync<string>("sessionStorage.getItem", sessionKey);
+        return data;
+        // myer=   SessionService.GetValue(sessionKey);
+        // Use 'data' retrieved from sessionStorage
+    }
+
+
+    private async Task DeleteSessionData()
+    {
+        await Js.InvokeVoidAsync("sessionStorage.removeItem", sessionKey);
+    }
+
+    private async Task GetUserLocation()
+    {
+        var location = await Js.InvokeAsync<string>("navigator.geolocation.getCurrentPosition");
+        // Process the location data obtained
+
+    }
+
+    private async Task ShowAlert(string mes)
+    {
+        await Js.InvokeVoidAsync("alert", mes);
+    }
+
+    private async Task ScrollToTop()
+    {
+        await Js.InvokeVoidAsync("scroll", 0, 0);
+    }
+
+
+
+
+    private async Task Sendmail(string mes)
+    {
+        try
+        {
+            object fakeobj = null;
+
+            //string mes = "Thank you " + _regmodel.Username + "  for your registration";
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Authentication/sendEmail";
+
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "useremail", _regmodel.Email } , { "usermes", mes }    };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+            var response = await httpClient.PostAsJsonAsync(uriWithParameters, fakeobj);
+            if (response.IsSuccessStatusCode)
+            {
+                
+            }
+            else
+                myer = response.StatusCode.ToString();
+
+
+
+        }
+        catch (Exception ex) { string mes1 = ex.Message; Console.WriteLine(mes1); }
+    }
+
+
+    /*
+    private async void VerifyCode(KeyboardEventArgs e)
+        {
+
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+
+    }
+        }
+    */
+
+
+}

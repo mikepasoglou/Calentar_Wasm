@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33414.496
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calentar.Server", "Server\Calentar.Server.csproj", "{4DB964E4-88BC-4FDE-BDA5-1D3D5423451C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calentar.Client", "Client\Calentar.Client.csproj", "{97D822CA-F2DA-4168-ABB0-0E2768BF20B5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Calentar.Shared", "Shared\Calentar.Shared.csproj", "{0979787A-8BC8-448B-84D0-DF45359F2534}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4DB964E4-88BC-4FDE-BDA5-1D3D5423451C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DB964E4-88BC-4FDE-BDA5-1D3D5423451C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DB964E4-88BC-4FDE-BDA5-1D3D5423451C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DB964E4-88BC-4FDE-BDA5-1D3D5423451C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97D822CA-F2DA-4168-ABB0-0E2768BF20B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97D822CA-F2DA-4168-ABB0-0E2768BF20B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97D822CA-F2DA-4168-ABB0-0E2768BF20B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97D822CA-F2DA-4168-ABB0-0E2768BF20B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0979787A-8BC8-448B-84D0-DF45359F2534}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0979787A-8BC8-448B-84D0-DF45359F2534}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0979787A-8BC8-448B-84D0-DF45359F2534}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0979787A-8BC8-448B-84D0-DF45359F2534}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {07D08FE4-BFFB-47B4-8677-AC1FCD45E3C2}
+	EndGlobalSection
+EndGlobal

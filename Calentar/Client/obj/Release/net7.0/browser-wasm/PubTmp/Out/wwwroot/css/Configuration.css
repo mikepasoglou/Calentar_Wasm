@@ -1,0 +1,272 @@
+﻿body {
+    background-color: antiquewhite;
+}
+
+.Excat {
+    border: 4px solid green;
+    font-family: Arial, Helvetica, sans-serif;
+    /*
+    margin: 1px;
+    height: min-content;
+    width: 100%;
+    padding: 1px;
+    float: left;
+    max-height: 500px;
+    
+    border-collapse: collapse;
+    overflow-x: auto;
+        */
+}
+
+.Excat table {
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    table-layout: fixed;
+    width: 100%;
+}
+
+
+.Excat table-header { /*not work for fix header*/
+    position: sticky;
+    top: 0;
+    background-color: #f2f2f2;
+}
+
+.Excat tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.Excat tr:hover {
+    background-color: #ddd;
+}
+
+
+.Excat td:hover {
+    background-color: GrayText;
+}
+
+.Excat th {
+    padding: .625em;
+    text-align: center;
+}
+
+.Excat td {
+    padding: .625em;
+    text-align: center;
+}
+
+
+
+.Excat table tr {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    padding: .35em;
+}
+
+
+
+
+.Expense {
+    border: 4px solid green;
+    font-family: Arial, Helvetica, sans-serif;
+    
+}
+
+    .Expense table {
+        border: 1px solid #ccc;
+        border-collapse: collapse;
+        margin: 0;
+        padding: 0;
+        table-layout: fixed;
+        width: 100%;
+    }
+
+
+    .Expense table-header { /*not work for fix header*/
+        position: sticky;
+        top: 0;
+        background-color: #f2f2f2;
+    }
+
+    .Expense tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .Expense tr:hover {
+        background-color: #ddd;
+    }
+
+
+    .Expense td:hover {
+        background-color: GrayText;
+    }
+
+    .Expense th {
+        padding: .625em;
+        text-align: center;
+    }
+
+    .Expense td {
+        padding: .625em;
+        text-align: center;
+    }
+
+
+
+    .Expense table tr {
+        background-color: #f8f8f8;
+        border: 1px solid #ddd;
+        padding: .35em;
+    }
+
+
+
+
+
+
+.Incat {
+    border: 4px solid green;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+    .Incat table {
+        border: 1px solid #ccc;
+        border-collapse: collapse;
+        margin: 0;
+        padding: 0;
+        table-layout: fixed;
+        width: 100%;
+    }
+
+
+    .Incat table-header { /*not work for fix header*/
+        position: sticky;
+        top: 0;
+        background-color: #f2f2f2;
+    }
+
+    .Incat tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .Incat tr:hover {
+        background-color: #ddd;
+    }
+
+
+    .Incat td:hover {
+        background-color: GrayText;
+    }
+
+    .Incat th {
+        padding: .625em;
+        text-align: center;
+    }
+
+    .Incat td {
+        padding: .625em;
+        text-align: center;
+    }
+
+
+
+    .Incat table tr {
+        background-color: #f8f8f8;
+        border: 1px solid #ddd;
+        padding: .35em;
+    }
+
+
+
+
+
+
+
+.Income {
+    border: 4px solid green;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+    .Income table {
+        border: 1px solid #ccc;
+        border-collapse: collapse;
+        margin: 0;
+        padding: 0;
+        table-layout: fixed;
+        width: 100%;
+    }
+
+
+    .Income table-header { /*not work for fix header*/
+        position: sticky;
+        top: 0;
+        background-color: #f2f2f2;
+    }
+
+    .Income tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .Income tr:hover {
+        background-color: #ddd;
+    }
+
+
+    .Income td:hover {
+        background-color: GrayText;
+    }
+
+    .Income th {
+        padding: .625em;
+        text-align: center;
+    }
+
+    .Income td {
+        padding: .625em;
+        text-align: center;
+    }
+
+
+
+    .Income table tr {
+        background-color: #f8f8f8;
+        border: 1px solid #ddd;
+        padding: .35em;
+    }
+
+
+
+
+
+
+
+@media screen and (max-width: 800px) {
+    table thead {
+        border: none;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+
+    table tr {
+        border-bottom: 3px solid #ddd;
+        display: block;
+    }
+
+    table td {
+        border-bottom: 1px solid #ddd;
+        display: block;
+        text-align: right;
+    }
+
+        table td::before {
+            content: attr(data-label);
+            float: left;
+        }
+}

@@ -1,0 +1,81 @@
+﻿.row {
+    display: inline;
+    flex-wrap: nowrap;
+    /* justify-content: space-between; Adjust this as needed */
+}
+
+.column {
+    flex: 1;
+    margin: 10px; /* Adjust the margin as needed */
+}
+
+.card {
+    height: 100%;
+    display: flex;
+    
+}
+
+.card-body {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* On screens that are 992px wide or less, go from four columns to two columns 
+@media screen and (max-width: 1600px) {
+    .column {
+        flex: 50%;
+    }
+}
+
+
+@media screen and (max-width: 900px) {
+    .row {
+        flex-direction: column;
+    }
+}
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+@keyframes fadeIn {
+    0% {
+        opacity: 0; /* Start with opacity 0 (fully transparent) 
+    }
+
+    100% {
+        opacity: 1; /* End with opacity 1 (fully visible) 
+    }
+}
+
+@keyframes moveRightToLeft {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
+    /* Styles for screens with a minimum width of 768px 
+@media (min-width: 768px) {
+    .Εxpenseschart {
+        width: 60%; 
+    }
+}
+
+*/

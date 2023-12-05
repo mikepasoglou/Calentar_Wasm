@@ -1,0 +1,93 @@
+﻿@page "/EditAppointmentPage"
+@inject DialogService DialogService
+@inject HttpClient httpClient
+
+<RadzenTemplateForm TItem="AppointmentVM" Data="@model" Submit=@OnSubmit>
+    <div class="row" style="margin-bottom: 16px">
+        <div class="col-md-3">
+            <RadzenLabel Text="Text" />
+        </div>
+        <div class="col">
+            <RadzenTextBox @bind-Value="@model.MESSAGE" Name="Text" />
+            <RadzenRequiredValidator Text="Title is required" Component="Text" />
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 16px">
+        <div class="col-md-3">
+            <RadzenLabel Text="Start" />
+        </div>
+        <div class="col">
+            <RadzenDatePicker @bind-Value="@model.STARTDATE" Name="Start" ShowTime="true" />
+            <RadzenRequiredValidator Text="Start is required" Component="Start" />
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 16px">
+        <div class="col-md-3">
+            <RadzenLabel Text="End" />
+        </div>
+        <div class="col">
+            <RadzenDatePicker Name="End" @bind-Value="@model.ENDDATE" ShowTime="true" />
+            <RadzenRequiredValidator Component="End" Text="End is required" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col">
+            <RadzenButton ButtonType="Radzen.ButtonType.Submit" Text="Save" />
+        </div>
+    </div>
+</RadzenTemplateForm>
+@code {
+    [Parameter]
+    public AppointmentVM Appointment { get; set; }
+
+    AppointmentVM model = new AppointmentVM();
+    string myer;
+
+
+
+    protected override void OnParametersSet()
+    {
+        model = Appointment;
+    }
+
+    private async Task OnSubmit(AppointmentVM model)
+    {
+        await Editapointment(model, ClassTEST.USERID);
+        DialogService.Close(model);
+    }
+
+
+    private async Task Editapointment(AppointmentVM model, string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            model.USERID = UserId; // ??????????????????????????????????????
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/Appointment/Editpointment";
+            HttpResponseMessage response = await httpClient.PutAsJsonAsync<AppointmentVM>(baseUri, model);
+            if (response.IsSuccessStatusCode)
+            {
+                // ......
+            }
+            else
+                myer = response.StatusCode.ToString();
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+    }
+
+
+
+
+}

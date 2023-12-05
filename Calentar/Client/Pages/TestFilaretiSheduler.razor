@@ -1,0 +1,402 @@
+﻿@page "/TestFilaretiSheduler"
+
+@using MikeUiComponentsLib
+@using MikeUiComponentsLib.ModelsViews
+@using Calentar.Client.DataModels
+@using static MikeUiComponentsLib.FilaretiSheduler;
+@inject HttpClient httpClient
+@inject IJSRuntime Js;
+
+
+
+<html>
+<head>
+    
+</head>
+<body>
+
+    @if (myer != string.Empty)
+    {
+         ShowAlert(myer);
+    }
+
+    @if ((ClassTEST.USERID == string.Empty) || (ClassTEST.responseToken == string.Empty))
+    {
+        ShowAlert("Please Login First");
+    }
+
+    <!--
+    <div>
+        <iframe src="/Pasoglou_Michalis_CV.pdf" width="50%" height="400px"></iframe>
+    </div>
+    --> 
+ 
+    
+    <FilaretiSheduler @ref="Sheduler" OnAddNewEvent="HandleAddEvent"  OnUpdateEvent="HandleEditEvent" OnLoadEventsList="HandleLoadEvent" />
+
+</body> </html>
+
+
+
+@code {
+
+    FilaretiSheduler? Sheduler;
+    string myer = string.Empty;
+    //protected int newidfilemodel = 0;
+
+
+    protected override async void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+
+
+    /*
+    DateTime d1 = new DateTime(2023, 11, 20, 03, 25, 00);
+    DateTime d2 = new DateTime(2023, 11, 15, 13, 20, 00);
+    DateTime d3 = new DateTime(2023, 12, 10, 21, 13, 00);
+
+    ShedulerEvent myev1 = new ShedulerEvent() { StartDate = d1, EndDate = d1.AddHours(1), Message = "Meeting 1", Priority = 0 };
+    ShedulerEvent myev6 = new ShedulerEvent() { StartDate = d1.AddHours(1), EndDate = d1.AddHours(2), Message = "Dendist", Priority = 1 };
+    ShedulerEvent myev7 = new ShedulerEvent() { StartDate = d1.AddHours(2), EndDate = d1.AddHours(3), Message = "go job21", Priority = 2 };
+    ShedulerEvent myev8 = new ShedulerEvent() { StartDate = d1.AddHours(3), EndDate = d1.AddHours(4), Message = "go job 2", Priority = 0 };
+
+    ShedulerEvent myev2 = new ShedulerEvent() { StartDate = d2, EndDate = d2.AddHours(1), Message = "Meeting 2", Priority = 1 };
+    ShedulerEvent myev3 = new ShedulerEvent() { StartDate = d2, EndDate = d2.AddHours(2), Message = "Meet kosta", Priority = 2 };
+    ShedulerEvent myev4 = new ShedulerEvent() { StartDate = d2.AddDays(25), EndDate = d2.AddDays(25), Message = "Pay Biils", Priority = 2 };
+    ShedulerEvent myev5 = new ShedulerEvent() { StartDate = d3, EndDate = d3.AddHours(1), Message = "Meeting 3", Priority = 3 };
+    mylist.Add(myev1);
+    mylist.Add(myev2);
+    mylist.Add(myev3);
+    mylist.Add(myev4);
+    mylist.Add(myev5);
+     mylist.Add(myev6);
+     mylist.Add(myev7);
+     mylist.Add(myev8);
+
+         //ShowAlert("HandleLoadEvent");
+         */
+
+         /*   is OK   
+    private  async  Task HandleLoadEvent(List<ShedulerEvent> mylist)
+    {
+    // mylist =  await GetShedulerEvents(ClassTEST.USERID);
+
+    //int adad = 0;
+
+
+
+         List<ShedulerEvent>  firstlist = await GetShedulerEvents(ClassTEST.USERID);
+    if (firstlist.Count > 0)
+
+       foreach (var ev in firstlist)
+        {
+    mylist.Add(ev);
+        }
+        else
+        {
+    int xx = 0;
+
+    }
+    //await Task.Delay(1);
+    return; //Task.CompletedTask;
+
+     }
+
+    */
+
+    private async Task<List<ShedulerEventArgs>> HandleLoadEvent()
+    {
+        //List<ShedulerEvent> firstlist =  await GetShedulerEvents(ClassTEST.USERID);
+
+        List<ShedulerEventArgs> event_file_list = await GetShedulerEventArgsList(ClassTEST.USERID);
+
+        myer = "";
+        /*
+        foreach (var ev in firstlist)  // for test only
+                {
+                if (ev.FileData!=null)
+                {
+                string name = ev.FileName;
+                string textContent = System.Text.Encoding.UTF8.GetString(ev.FileData);  // only for txt files
+        }
+        }
+        */
+        return event_file_list;
+    }
+
+
+    private async void HandleAddEvent(ShedulerEventArgs savedEvent)
+    {
+        if (savedEvent.filemodel!=null)
+        {
+            int  filemodelId = await AddShedulerEventFile(savedEvent.filemodel);
+            if (filemodelId > 0)
+                savedEvent.basicmodel.FileId = filemodelId;  
+            else
+                myer = "HandleAddEvent Internal Error"; // check
+        }
+        await AddShedulerEvent(savedEvent.basicmodel);
+
+    }
+
+
+    /*   IS OK
+    private async void HandleAddEvent(ShedulerEvent savedEvent)
+    {
+
+        if (savedEvent != null)
+            await AddShedulerEvent(savedEvent);
+        //await ShowAlert("Handle AddEvent   " + savedEvent.StartDate + savedEvent.Message);
+
+    }
+    
+    private async void HandleAddEventFile(ShedulerEventFile savedEvent)
+    {
+
+        if (savedEvent != null)
+            newidfilemodel = await AddShedulerEventFile(savedEvent);
+
+            int a=0;
+            a++;
+        //await ShowAlert("Handle AddEvent   " + savedEvent.StartDate + savedEvent.Message);
+
+    }
+    */
+
+    private async void HandleEditEvent(ShedulerEventArgs savedEvent)
+    {
+        //ShowAlert("Handle EditEvent  " + savedEvent.Message);
+        if (savedEvent != null)
+            await EditShedulerEvent(savedEvent.basicmodel);  //cange  cheek if fie   changed
+    }
+
+
+    // https://learn.microsoft.com/en-us/aspnet/core/blazor/components/event-handling?view=aspnetcore-8.0    stop propagation
+    //https://medium.com/younited-tech-blog/write-a-reusable-blazor-component-756d6f094b4a    -- create Lib reUseable
+
+
+
+
+
+
+    private async Task<List<ShedulerEvent>> GetShedulerEvents(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT  is IsNullOrEmpty.";
+                return null;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/FilaretiSheduler/GetShedulerEventList";
+            
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curusrid", UserId }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+                return await httpClient.GetFromJsonAsync<List<ShedulerEvent>>(uriWithParameters);
+            }
+            else
+            {
+                var result = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                myer = result.GetErrorString();
+                return null;
+            }
+
+        }
+        catch (Exception ex) { string mes = ex.Message; return null; }
+    }
+
+
+
+
+    private async Task<List<ShedulerEventArgs>> GetShedulerEventArgsList(string UserId)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT  is IsNullOrEmpty.";
+                return null;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/FilaretiSheduler/GetShedulerEventArgsList";
+           /* string baseUri = "https://localhost:7104/api/FilaretiSheduler/GetShedulerEventArgsListA"; */
+
+
+            Dictionary<string, string> queryParameters = new Dictionary<string, string>{
+                                { "curusrid", UserId }     };
+            string queryString = string.Join("&", queryParameters.Select(kv => $"{kv.Key}={Uri.EscapeDataString(kv.Value)}"));
+            string uriWithParameters = $"{baseUri}?{queryString}";
+
+
+            HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+            if (response.IsSuccessStatusCode)
+            {
+               // return await httpClient.GetFromJsonAsync<List<ShedulerEventArgs>>(uriWithParameters);
+                var responseData = await response.Content.ReadFromJsonAsync<List<ShedulerEventArgs>>();
+                return responseData;
+            }
+            else
+            {
+                var result = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                myer = result.GetErrorString();
+                return null;
+            }
+
+        }
+        catch (Exception ex) { myer = ex.Message; return null; }
+    }
+
+
+    /*
+     * HttpResponseMessage response = await httpClient.GetAsync(uriWithParameters);
+    if (response.IsSuccessStatusCode)
+    {
+    var responseData = await response.Content.ReadFromJsonAsync<List<ShedulerEventArgs>>();
+    return responseData;
+    }
+    else
+    {
+    var errorResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+    myer = errorResponse.GetErrorString();
+    return null;
+    }
+
+     */
+
+
+
+
+
+
+
+
+    private async Task AddShedulerEvent(ShedulerEvent model)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT  is IsNullOrEmpty.";
+                return;
+            }
+
+            model.UserId = ClassTEST.USERID; // ??????????????????????????????????????
+            /*
+            if (newidfilemodel> 0)
+            {
+                //save file and retun filemodel ID
+                //model.FileId= retun iD
+                model.FileId = newidfilemodel;
+            }
+            */
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/FilaretiSheduler/AddShedulerEvent";
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync<ShedulerEvent>(baseUri, model);
+            if (response.IsSuccessStatusCode)
+            {
+                // ......
+            }
+            else
+            {
+                var result = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                myer = result.GetErrorString();
+            }
+        }
+        catch (Exception ex) { myer = ex.Message; StateHasChanged(); Console.WriteLine(myer); }
+    }
+
+
+
+
+    private async Task<Int32> AddShedulerEventFile(ShedulerEventFile model)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT  is IsNullOrEmpty.";
+            }
+
+            // model.UserId = ClassTEST.USERID; // ??????????????????????????????????????
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/FilaretiSheduler/AddShedulerEventFile";
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync<ShedulerEventFile>(baseUri, model);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<Int32>(); 
+            }
+            else
+            {
+                var result = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                myer = result.GetErrorString();
+                return 0;
+            }
+
+
+        }
+        catch (Exception ex) { myer = ex.Message; Console.WriteLine(myer); return 0; }
+    }
+
+
+
+
+
+
+
+    private async Task EditShedulerEvent(ShedulerEvent model)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(ClassTEST.responseToken))
+            {
+                myer = "JWT token is IsNullOrEmpty.";
+                return;
+            }
+
+            httpClient.DefaultRequestHeaders.Clear(); // Clear existing headers (if any)
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {ClassTEST.responseToken}");
+
+            string baseUri = "https://mikepas-001-site2.htempurl.com/api/FilaretiSheduler/EditShedulerEvent";
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync<ShedulerEvent>(baseUri, model);
+            if (!response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                myer = result.GetErrorString();
+            }
+
+
+        }
+        catch (Exception ex) { string mes = ex.Message; Console.WriteLine(mes); }
+        
+    }
+
+
+    private  void ShowAlert(string mes)
+    {
+         Js.InvokeVoidAsync("alert", mes);
+    }
+
+
+
+
+}
