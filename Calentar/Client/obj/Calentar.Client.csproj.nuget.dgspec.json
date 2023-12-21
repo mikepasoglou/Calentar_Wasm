@@ -1,23 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\Calentar.Client.csproj": {}
+    "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\Calentar.Client.csproj": {}
   },
   "projects": {
-    "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\Calentar.Client.csproj": {
+    "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\Calentar.Client.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\Calentar.Client.csproj",
+        "projectUniqueName": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\Calentar.Client.csproj",
         "projectName": "Calentar.Client",
-        "projectPath": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\Calentar.Client.csproj",
-        "packagesPath": "C:\\Users\\ICS\\.nuget\\packages\\",
-        "outputPath": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\obj\\",
+        "projectPath": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\Calentar.Client.csproj",
+        "packagesPath": "C:\\Users\\mike\\.nuget\\packages\\",
+        "outputPath": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\ICS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\mike\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -27,15 +28,14 @@
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
-          "C:\\Users\\Public\\Documents\\Infragistics\\NuGet\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Shared\\Calentar.Shared.csproj": {
-                "projectPath": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Shared\\Calentar.Shared.csproj"
+              "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Shared\\Calentar.Shared.csproj": {
+                "projectPath": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Shared\\Calentar.Shared.csproj"
               }
             }
           }
@@ -95,6 +95,24 @@
               "target": "Package",
               "version": "[7.0.0, )"
             },
+            "Microsoft.NET.ILLink.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.100-1.23211.1, )",
+              "autoReferenced": true
+            },
+            "Microsoft.NET.ILLink.Tasks": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[7.0.100-1.23211.1, )",
+              "autoReferenced": true
+            },
+            "Microsoft.NET.Sdk.WebAssembly.Pack": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.0, )",
+              "autoReferenced": true
+            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
@@ -116,7 +134,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {
@@ -125,20 +143,21 @@
         }
       }
     },
-    "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Shared\\Calentar.Shared.csproj": {
+    "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Shared\\Calentar.Shared.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Shared\\Calentar.Shared.csproj",
+        "projectUniqueName": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Shared\\Calentar.Shared.csproj",
         "projectName": "Calentar.Shared",
-        "projectPath": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Shared\\Calentar.Shared.csproj",
-        "packagesPath": "C:\\Users\\ICS\\.nuget\\packages\\",
-        "outputPath": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Shared\\obj\\",
+        "projectPath": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Shared\\Calentar.Shared.csproj",
+        "packagesPath": "C:\\Users\\mike\\.nuget\\packages\\",
+        "outputPath": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Shared\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\ICS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\mike\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -148,7 +167,6 @@
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
-          "C:\\Users\\Public\\Documents\\Infragistics\\NuGet\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -182,7 +200,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -13,7 +13,6 @@ F:\Works_Blazor_Razor\Razor_examples\Calentar_Project\Calentar_Wasm\Calentar\Sha
 F:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\bin\Release\net7.0\Calentar.Shared.deps.json
 F:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\bin\Release\net7.0\Calentar.Shared.dll
 F:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\bin\Release\net7.0\Calentar.Shared.pdb
-F:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\Calentar.Shared.csproj.AssemblyReference.cache
 F:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\Calentar.Shared.GeneratedMSBuildEditorConfig.editorconfig
 F:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\Calentar.Shared.AssemblyInfoInputs.cache
 F:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\Calentar.Shared.AssemblyInfo.cs
@@ -22,3 +21,16 @@ F:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calenta
 F:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\refint\Calentar.Shared.dll
 F:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\Calentar.Shared.pdb
 F:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\ref\Calentar.Shared.dll
+F:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\Calentar.Shared.sourcelink.json
+C:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\bin\Release\net7.0\Calentar.Shared.deps.json
+C:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\bin\Release\net7.0\Calentar.Shared.dll
+C:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\bin\Release\net7.0\Calentar.Shared.pdb
+C:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\Calentar.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\Calentar.Shared.AssemblyInfoInputs.cache
+C:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\Calentar.Shared.AssemblyInfo.cs
+C:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\Calentar.Shared.csproj.CoreCompileInputs.cache
+C:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\Calentar.Shared.sourcelink.json
+C:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\Calentar.Shared.dll
+C:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\refint\Calentar.Shared.dll
+C:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\Calentar.Shared.pdb
+C:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Shared\obj\Release\net7.0\ref\Calentar.Shared.dll

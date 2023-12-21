@@ -1,119 +1,123 @@
 {
   "Files": [
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\bin\\Release\\net7.0\\wwwroot\\_framework\\blazor.webassembly.js",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\bin\\Release\\net7.0\\wwwroot\\_framework\\blazor.webassembly.js",
       "PackagePath": "staticwebassets\\_framework\\blazor.webassembly.js"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\obj\\Release\\net7.0\\build-gz\\VtIW+C5p.gz",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\obj\\Release\\net7.0\\compressed\\p2a65n8hki.gz",
       "PackagePath": "staticwebassets\\_framework\\blazor.webassembly.js.gz"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\obj\\Release\\net7.0\\scopedcss\\bundle\\Calentar.Client.styles.css",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\obj\\Release\\net7.0\\scopedcss\\bundle\\Calentar.Client.styles.css",
       "PackagePath": "staticwebassets\\Calentar.Client.styles.css"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\Configuration.css",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\CalendarStylescss.css",
+      "PackagePath": "staticwebassets\\css\\CalendarStylescss.css"
+    },
+    {
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\Configuration.css",
       "PackagePath": "staticwebassets\\css\\Configuration.css"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\Dashboard.css",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\Dashboard.css",
       "PackagePath": "staticwebassets\\css\\Dashboard.css"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\ExTransactions.css",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\ExTransactions.css",
       "PackagePath": "staticwebassets\\css\\ExTransactions.css"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\Home.css",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\Home.css",
       "PackagePath": "staticwebassets\\css\\Home.css"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\InTransactions.css",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\InTransactions.css",
       "PackagePath": "staticwebassets\\css\\InTransactions.css"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\ShowInfo.css",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\ShowInfo.css",
       "PackagePath": "staticwebassets\\css\\ShowInfo.css"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\Transactions.css",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\Transactions.css",
       "PackagePath": "staticwebassets\\css\\Transactions.css"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\app.css",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\app.css",
       "PackagePath": "staticwebassets\\css\\app.css"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\bootstrap\\bootstrap.min.css",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\bootstrap\\bootstrap.min.css",
       "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\bootstrap\\bootstrap.min.css.map",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\bootstrap\\bootstrap.min.css.map",
       "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css.map"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\FONT-LICENSE",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\FONT-LICENSE",
       "PackagePath": "staticwebassets\\css\\open-iconic"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\ICON-LICENSE",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\ICON-LICENSE",
       "PackagePath": "staticwebassets\\css\\open-iconic"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\README.md",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\README.md",
       "PackagePath": "staticwebassets\\css\\open-iconic\\README.md"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\font\\css\\open-iconic-bootstrap.min.css",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\font\\css\\open-iconic-bootstrap.min.css",
       "PackagePath": "staticwebassets\\css\\open-iconic\\font\\css\\open-iconic-bootstrap.min.css"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.eot",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.eot",
       "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.eot"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.otf",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.otf",
       "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.otf"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.svg",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.svg",
       "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.svg"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.ttf",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.ttf",
       "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.ttf"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.woff",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.woff",
       "PackagePath": "staticwebassets\\css\\open-iconic\\font\\fonts\\open-iconic.woff"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\favicon.png",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\favicon.png",
       "PackagePath": "staticwebassets\\favicon.png"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\icon-192.png",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\icon-192.png",
       "PackagePath": "staticwebassets\\icon-192.png"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\images\\bg.jpg",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\images\\bg.jpg",
       "PackagePath": "staticwebassets\\images\\bg.jpg"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\images\\hb.jpg",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\images\\hb.jpg",
       "PackagePath": "staticwebassets\\images\\hb.jpg"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\images\\hbc.jpg",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\images\\hbc.jpg",
       "PackagePath": "staticwebassets\\images\\hbc.jpg"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\index.html",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\index.html",
       "PackagePath": "staticwebassets\\index.html"
     },
     {
-      "Id": "F:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\js\\myScript.js",
+      "Id": "C:\\Works_Blazor_Razor\\Razor_examples_MIKE\\Calentar_Project\\Calentar_Wasm\\Calentar\\Client\\wwwroot\\js\\myScript.js",
       "PackagePath": "staticwebassets\\js\\myScript.js"
     },
     {

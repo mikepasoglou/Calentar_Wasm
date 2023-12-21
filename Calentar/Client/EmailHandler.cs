@@ -21,7 +21,8 @@ namespace Calentar.Client
                 {
                     // Set the SMTP server and port (e.g., Gmail's SMTP server and port 587)
                     client.Port = 587;
-                    
+                    client.Credentials = new NetworkCredential("mp@carparking.gr", "p@s0gloU");// change
+
                     client.EnableSsl = true;
 
                     // Create a new MailMessage object

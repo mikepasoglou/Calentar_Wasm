@@ -26,56 +26,6 @@ wasm_invoke_iiii (void *target_func, MonoInterpMethodArguments *margs)
 }
 
 static void
-wasm_invoke_iiliiil (void *target_func, MonoInterpMethodArguments *margs)
-{
-	typedef int (*T)(int arg_0, int64_t arg_1, int arg_2, int arg_3, int arg_4, int64_t arg_5);
-	T func = (T)target_func;
-	int res = func (mono_wasm_interp_method_args_get_iarg (margs, 0), mono_wasm_interp_method_args_get_larg (margs, 1), mono_wasm_interp_method_args_get_iarg (margs, 3), mono_wasm_interp_method_args_get_iarg (margs, 4), mono_wasm_interp_method_args_get_iarg (margs, 5), mono_wasm_interp_method_args_get_larg (margs, 6));
-	void *retval = mono_wasm_interp_method_args_get_retval (margs);
-	*(int*)retval = res;
-}
-
-static void
-wasm_invoke_iil (void *target_func, MonoInterpMethodArguments *margs)
-{
-	typedef int (*T)(int arg_0, int64_t arg_1);
-	T func = (T)target_func;
-	int res = func (mono_wasm_interp_method_args_get_iarg (margs, 0), mono_wasm_interp_method_args_get_larg (margs, 1));
-	void *retval = mono_wasm_interp_method_args_get_retval (margs);
-	*(int*)retval = res;
-}
-
-static void
-wasm_invoke_iili (void *target_func, MonoInterpMethodArguments *margs)
-{
-	typedef int (*T)(int arg_0, int64_t arg_1, int arg_2);
-	T func = (T)target_func;
-	int res = func (mono_wasm_interp_method_args_get_iarg (margs, 0), mono_wasm_interp_method_args_get_larg (margs, 1), mono_wasm_interp_method_args_get_iarg (margs, 3));
-	void *retval = mono_wasm_interp_method_args_get_retval (margs);
-	*(int*)retval = res;
-}
-
-static void
-wasm_invoke_iii (void *target_func, MonoInterpMethodArguments *margs)
-{
-	typedef int (*T)(int arg_0, int arg_1);
-	T func = (T)target_func;
-	int res = func (mono_wasm_interp_method_args_get_iarg (margs, 0), mono_wasm_interp_method_args_get_iarg (margs, 1));
-	void *retval = mono_wasm_interp_method_args_get_retval (margs);
-	*(int*)retval = res;
-}
-
-static void
-wasm_invoke_li (void *target_func, MonoInterpMethodArguments *margs)
-{
-	typedef int64_t (*T)(int arg_0);
-	T func = (T)target_func;
-	int64_t res = func (mono_wasm_interp_method_args_get_iarg (margs, 0));
-	void *retval = mono_wasm_interp_method_args_get_retval (margs);
-	*(int64_t*)retval = res;
-}
-
-static void
 wasm_invoke_i (void *target_func, MonoInterpMethodArguments *margs)
 {
 	typedef int (*T)(void);
@@ -102,6 +52,16 @@ wasm_invoke_vii (void *target_func, MonoInterpMethodArguments *margs)
 }
 
 static void
+wasm_invoke_iii (void *target_func, MonoInterpMethodArguments *margs)
+{
+	typedef int (*T)(int arg_0, int arg_1);
+	T func = (T)target_func;
+	int res = func (mono_wasm_interp_method_args_get_iarg (margs, 0), mono_wasm_interp_method_args_get_iarg (margs, 1));
+	void *retval = mono_wasm_interp_method_args_get_retval (margs);
+	*(int*)retval = res;
+}
+
+static void
 wasm_invoke_l (void *target_func, MonoInterpMethodArguments *margs)
 {
 	typedef int64_t (*T)(void);
@@ -117,6 +77,16 @@ wasm_invoke_iiiii (void *target_func, MonoInterpMethodArguments *margs)
 	typedef int (*T)(int arg_0, int arg_1, int arg_2, int arg_3);
 	T func = (T)target_func;
 	int res = func (mono_wasm_interp_method_args_get_iarg (margs, 0), mono_wasm_interp_method_args_get_iarg (margs, 1), mono_wasm_interp_method_args_get_iarg (margs, 2), mono_wasm_interp_method_args_get_iarg (margs, 3));
+	void *retval = mono_wasm_interp_method_args_get_retval (margs);
+	*(int*)retval = res;
+}
+
+static void
+wasm_invoke_iil (void *target_func, MonoInterpMethodArguments *margs)
+{
+	typedef int (*T)(int arg_0, int64_t arg_1);
+	T func = (T)target_func;
+	int res = func (mono_wasm_interp_method_args_get_iarg (margs, 0), mono_wasm_interp_method_args_get_larg (margs, 1));
 	void *retval = mono_wasm_interp_method_args_get_retval (margs);
 	*(int*)retval = res;
 }
@@ -330,6 +300,16 @@ wasm_invoke_ffi (void *target_func, MonoInterpMethodArguments *margs)
 }
 
 static void
+wasm_invoke_li (void *target_func, MonoInterpMethodArguments *margs)
+{
+	typedef int64_t (*T)(int arg_0);
+	T func = (T)target_func;
+	int64_t res = func (mono_wasm_interp_method_args_get_iarg (margs, 0));
+	void *retval = mono_wasm_interp_method_args_get_retval (margs);
+	*(int64_t*)retval = res;
+}
+
+static void
 wasm_invoke_lill (void *target_func, MonoInterpMethodArguments *margs)
 {
 	typedef int64_t (*T)(int arg_0, int64_t arg_1, int64_t arg_2);
@@ -387,8 +367,6 @@ static void* interp_to_native_invokes[] = {
 	wasm_invoke_iiiiiiiii,
 	wasm_invoke_iiiil,
 	wasm_invoke_iil,
-	wasm_invoke_iili,
-	wasm_invoke_iiliiil,
 	wasm_invoke_iill,
 	wasm_invoke_iilli,
 	wasm_invoke_l,
@@ -427,8 +405,6 @@ static const char* interp_to_native_signatures[] = {
 	"IIIIIIIII",
 	"IIIIL",
 	"IIL",
-	"IILI",
-	"IILIIIL",
 	"IILL",
 	"IILLI",
 	"L",
@@ -447,7 +423,7 @@ static const char* interp_to_native_signatures[] = {
 	"VIIIIIII",
 	"VIIL",
 };
-static unsigned int interp_to_native_signatures_count = 38;
+static unsigned int interp_to_native_signatures_count = 36;
 
 static int
 compare_icall_tramp (const void *key, const void *elem)

@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyCopyrightAttribute("Pasoglou Michalis 2023")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4b846c29aa9d56060e55eb93e46c7ce0775938d9")]
 [assembly: System.Reflection.AssemblyProductAttribute("Calentar.Client")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Calentar.Client")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

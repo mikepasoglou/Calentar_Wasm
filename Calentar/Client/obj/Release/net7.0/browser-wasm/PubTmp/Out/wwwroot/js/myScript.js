@@ -1,5 +1,5 @@
-﻿function showAlert() {
-    alert("message");
+﻿function showAlertJS(mes) {
+    alert(mes);
 }
 
 
@@ -67,3 +67,22 @@ document.addEventListener("DOMContentLoaded", function () {
     setupMutationObserver();
 });
 
+
+
+
+
+// Add a script section in your index.html or import it using _Imports.razor
+function initializeMap(apiKey) {
+    // Initialize the map with the provided API key
+    var map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: -34.397, lng: 150.644 },
+        zoom: 8
+    });
+
+    // You can add markers, polygons, etc. as needed
+    var marker = new google.maps.Marker({
+        position: { lat: -34.397, lng: 150.644 },
+        map: map,
+        title: 'Hello World!'
+    });
+}

@@ -1,7 +1,6 @@
 ﻿@page "/TestFilaretiSheduler"
 
-@using MikeUiComponentsLib
-@using MikeUiComponentsLib.ModelsViews
+
 @using Calentar.Client.DataModels
 @using static MikeUiComponentsLib.FilaretiSheduler;
 @inject HttpClient httpClient
@@ -11,7 +10,7 @@
 
 <html>
 <head>
-    
+    <link rel="stylesheet" href="/css/CalendarStylescss.css" /> <!-- No good practice . must import from index.html  -->
 </head>
 <body>
 
@@ -31,7 +30,6 @@
     </div>
     --> 
  
-    
     <FilaretiSheduler @ref="Sheduler" OnAddNewEvent="HandleAddEvent"  OnUpdateEvent="HandleEditEvent" OnLoadEventsList="HandleLoadEvent" />
 
 </body> </html>

@@ -44,13 +44,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\Calentar.Shared.csproj" />
+    <Reference Include="MikeUiComponentsLib.dll">
+      <HintPath>C:\Works_Blazor_Razor\Razor_examples_MIKE\MikeUiComponentsLib\Runtime\MikeUiComponentsLib.dll</HintPath>
+    </Reference>
+    
   </ItemGroup>
 
+
+
+
   <ItemGroup>
-    <Reference Include="MikeUiComponentsLib">
-      <HintPath>..\..\..\..\MikeUiComponentsLib\MikeUiComponentsLib\MikeUiComponentsLib\bin\Debug\net7.0\MikeUiComponentsLib.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\Shared\Calentar.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

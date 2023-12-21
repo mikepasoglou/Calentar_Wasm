@@ -7,7 +7,7 @@
 -DCORE_BINDINGS
 -DGEN_PINVOKE=1
 -emit-llvm
-"-IF:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Client\obj\Release\net7.0\wasm\for-publish"
-"-IC:\Program Files\dotnet\packs\Microsoft.NETCore.App.Runtime.Mono.browser-wasm\7.0.3\runtimes\browser-wasm\native\include\mono-2.0"
-"-IC:\Program Files\dotnet\packs\Microsoft.NETCore.App.Runtime.Mono.browser-wasm\7.0.3\runtimes\browser-wasm\native\include\wasm"
+"-IC:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Client\obj\Release\net7.0\wasm\for-publish"
+"-IC:\Program Files\dotnet\packs\Microsoft.NETCore.App.Runtime.Mono.browser-wasm\7.0.14\runtimes\browser-wasm\native\include\mono-2.0"
+"-IC:\Program Files\dotnet\packs\Microsoft.NETCore.App.Runtime.Mono.browser-wasm\7.0.14\runtimes\browser-wasm\native\include\wasm"
 -g

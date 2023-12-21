@@ -1,4 +1,8 @@
 is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = 
+build_property.EnableTrimAnalyzer = false
+build_property.IncludeAllContentForSelfExtract = 
 build_property.TargetFramework = net7.0
 build_property.TargetPlatformMinVersion = 
 build_property.UsingMicrosoftNETSdkWeb = 
@@ -9,125 +13,107 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = browser
 build_property.RootNamespace = Calentar.Client
 build_property.RootNamespace = Calentar.Client
-build_property.ProjectDir = F:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Client\
+build_property.ProjectDir = C:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Client\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 7.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = F:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Client
+build_property.MSBuildProjectDirectory = C:\Works_Blazor_Razor\Razor_examples_MIKE\Calentar_Project\Calentar_Wasm\Calentar\Client
 build_property._RazorSourceGeneratorDebug = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/App.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/EventConsole.razor]
-build_metadata.AdditionalFiles.TargetPath = RXZlbnRDb25zb2xlLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/About.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/About.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWJvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/AppoinmentPages/AddAppointmentPage.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXBwb2lubWVudFBhZ2VzXEFkZEFwcG9pbnRtZW50UGFnZS5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/AppoinmentPages/EditAppointmentPage.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXBwb2lubWVudFBhZ2VzXEVkaXRBcHBvaW50bWVudFBhZ2UucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/AppoinmentPages/ShowCalentar.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXBwb2lubWVudFBhZ2VzXFNob3dDYWxlbnRhci5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ConfigurationPages/AddExCategory.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ConfigurationPages/AddExCategory.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlndXJhdGlvblBhZ2VzXEFkZEV4Q2F0ZWdvcnkucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ConfigurationPages/AddIcCategory.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ConfigurationPages/AddIcCategory.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlndXJhdGlvblBhZ2VzXEFkZEljQ2F0ZWdvcnkucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ConfigurationPages/AddIncome.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ConfigurationPages/AddIncome.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlndXJhdGlvblBhZ2VzXEFkZEluY29tZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ConfigurationPages/Configuration.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ConfigurationPages/Configuration.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlndXJhdGlvblBhZ2VzXENvbmZpZ3VyYXRpb24ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ConfigurationPages/ConfigurationCRDU.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ConfigurationPages/ConfigurationCRDU.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlndXJhdGlvblBhZ2VzXENvbmZpZ3VyYXRpb25DUkRVLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/Datalist.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/Datalist.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGF0YWxpc3QucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ExpensePages/Addtransactions.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ExpensePages/Addtransactions.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXhwZW5zZVBhZ2VzXEFkZHRyYW5zYWN0aW9ucy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ExpensePages/ExTransactions.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ExpensePages/ExTransactions.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXhwZW5zZVBhZ2VzXEV4VHJhbnNhY3Rpb25zLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/IncomePages/AddtransactionsIncome.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/IncomePages/AddtransactionsIncome.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5jb21lUGFnZXNcQWRkdHJhbnNhY3Rpb25zSW5jb21lLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/IncomePages/InTransactions.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/IncomePages/InTransactions.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5jb21lUGFnZXNcSW5UcmFuc2FjdGlvbnMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/Index.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/Index.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/MapsCalendar.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/MapsCalendar.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFwc0NhbGVuZGFyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/MikeModal.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/MikeModal.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWlrZU1vZGFsLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/Scheduler.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGVyLnJhem9y
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ShowBlazorizeCharts.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hvd0JsYXpvcml6ZUNoYXJ0cy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ShowChart.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hvd0NoYXJ0LnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ShowInfo.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/ShowInfo.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hvd0luZm8ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/TestFilaretiSheduler.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/TestFilaretiSheduler.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVzdEZpbGFyZXRpU2hlZHVsZXIucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/UserPages/Login.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/UserPages/Login.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlclBhZ2VzXExvZ2luLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/UserPages/Register.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Pages/UserPages/Register.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlclBhZ2VzXFJlZ2lzdGVyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Shared/SurveyPrompt.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Shared/SurveyPrompt.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFN1cnZleVByb21wdC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/_Imports.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Shared/MainLayout.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-vzoruhgcyg
 
-[F:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Shared/NavMenu.razor]
+[C:/Works_Blazor_Razor/Razor_examples_MIKE/Calentar_Project/Calentar_Wasm/Calentar/Client/Shared/NavMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE5hdk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-c7fkg609iw
